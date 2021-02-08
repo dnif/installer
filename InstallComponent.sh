@@ -1,3 +1,4 @@
+!#/bin/bash
 echo -e "1. CORE \n"
 echo -e "2. DL \n"
 echo -e "3. AD \n"
