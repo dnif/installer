@@ -3,7 +3,7 @@ echo -e "1. CORE \n"
 echo -e "2. DL \n"
 echo -e "3. AD \n"
 echo -e "4. LC \n"
-echo -e "ENTER COMPONENT NAME:  \n "
+echo -e "ENTER COMPONENT NAME:  "
 read COMP
 case ${COMP^^} in
 
