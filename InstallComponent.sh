@@ -6,7 +6,6 @@ echo -e "4. LC \n"
 echo -e "ENTER COMPONENT NAME:  "
 read COMP
 case $COMP in
-
   CORE)
     echo -e "ITS CORE..\n"
     sleep 2
