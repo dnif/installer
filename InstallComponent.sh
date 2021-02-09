@@ -1,4 +1,6 @@
 #!/bin/bash
+export PATH=/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin
+
 echo -e "1. CORE \n"
 echo -e "2. DL \n"
 echo -e "3. AD \n"
