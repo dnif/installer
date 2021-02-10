@@ -3,7 +3,7 @@
 
 
 function docker_check() {
-	echo -e "Installing docker \n"
+	echo -e "[*]Installing docker \n"
 	sudo apt-get remove docker docker-engine docker.io containerd runc &>/dev/null
 	sudo apt-get install \
             apt-transport-https \
@@ -20,7 +20,7 @@ function docker_check() {
 	sudo apt-get -y update &>/dev/null
         sudo apt-get -y install docker-ce docker-ce-cli containerd.io &>/dev/null
         sleep 5
-        sudo docker run hello-world
+        sudo docker run hello-world &>/dev/null
         sleep 5
 	sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose &>/dev/null
 	sudo chmod +x /usr/local/bin/docker-compose 
@@ -60,10 +60,10 @@ if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 18.04 by 
        echo -e "[*] Checking operating system for compatibility - DONE\n"
        echo -e "* Select a DNIF component you would like to install\n"
        echo -e "** for more information visit https://docs.dnif.it/v91/docs/high-level-dnif-architecture\n"
-       echo -e "[1]. Core (CO) \n"
-       echo -e "[2]. Data Node (DN) \n"
-       echo -e "[3]. Adapter (AD) \n"
-       echo -e "[4]. Local Console (LC) \n"
+       echo -e "[1]- Core (CO) \n"
+       echo -e "[2]- Data Node (DN) \n"
+       echo -e "[3]- Adapter (AD) \n"
+       echo -e "[4]- Local Console (LC) \n"
        echo -e "ENTER COMPONENT NAME:  \n "
        read -r COMP
        case "${COMP^^}" in
@@ -72,7 +72,7 @@ if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 18.04 by 
 		       sleep 2
 		       echo -e "[*] Finding docker installation\n"
 		       if [ -x "$(command -v docker)" ]; then
-			       echo "Updating Docker"
+			       echo "[*]Updating Docker"
 			       docker_check
 			else
 				echo -e "[*] Finding docker installation - NEGATIVE\n"
@@ -82,7 +82,7 @@ if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 18.04 by 
 				echo -e "[*] Finding docker-compose - DONE"
 			fi
 			echo -e "[*] Pulling Docker Image for CORE"
-			docker pull dnif/core:v9beta2.2
+			#docker pull dnif/core:v9beta2.2
 			cd /
 			sudo mkdir -p DNIF
 			echo -e "Enter CORE IP:\c"
@@ -103,8 +103,8 @@ services:
       - "\'CORE_IP="$COIP"\'"
     ulimits:
       memlock:
-	soft: -1
-	hard: -1
+        soft: -1
+        hard: -1
     container_name: core-v9" >/DNIF/docker-compose.yml
 
 			      cd /DNIF || exit
@@ -115,7 +115,7 @@ services:
 			sleep 5
 			echo -e "[*] Finding docker installation\n"
 			if [ -x "$(command -v docker)" ]; then
-				echo "Updating Docker"
+				echo "[*] Updating Docker"
 				docker_check
 			else
 				echo -e "[*] Finding docker installation - NEGATIVE\n"
@@ -125,28 +125,28 @@ services:
 				echo -e "[*] Finding docker-compose - DONE"
 			fi
 			echo -e "[*] Pulling Docker Image for Adapter"
-			docker pull dnif/adapter:v9beta2.2
+			#docker pull dnif/adapter:v9beta2.2
 			echo -e "ENTER CORE IP: \c"
 			read -r COREIP
 			cd /
 			sudo mkdir -p /DNIF
 			sudo mkdir -p /DNIF/AD
 			sudo echo -e "version: "\'2.0\'"
-			services:
-			 adapter:
-			  image: dnif/adapter:v9beta2.2
-			  network_mode: "\'host\'"
-			  restart: unless-stopped
-			  cap_add:
-			   - NET_ADMIN
-			  environment:
-			   - "\'CORE_IP="$COREIP"\'"
-			  volumes:
-			   - /AD:/dnif
-			   - /backup:/backup
-			  container_name: adapter-v9" >/DNIF/AD/docker-compose.yaml
-			  cd /dnif/AD || exit
-			  #docker-compose up -d
+services:
+ adapter:
+  image: dnif/adapter:v9beta2.2
+  network_mode: "\'host\'"
+  restart: unless-stopped
+  cap_add:
+   - NET_ADMIN
+  environment:
+   - "\'CORE_IP="$COREIP"\'"
+  volumes:
+   - /AD:/dnif
+   - /backup:/backup
+  container_name: adapter-v9" >/DNIF/AD/docker-compose.yaml
+			  cd /DNIF/AD || exit
+			  docker-compose up -d
 			  ;;
 
 		LC)
@@ -154,7 +154,7 @@ services:
 			sleep 5
 			echo -e "[*] Finding docker installation\n"
 			if [ -x "$(command -v docker)" ]; then
-				echo "Updating Docker"
+				echo "[*] Updating Docker"
 				docker_check
 			else
 				echo -e "[*] Finding docker installation - NEGATIVE\n"
@@ -163,7 +163,7 @@ services:
 				echo -e "[*]Finding docker installation - DONE"
 				echo -e "[*] Finding docker-compose - DONE"
 			fi
-			docker pull dnif/console:v9beta2.2
+			#docker pull dnif/console:v9beta2.2
 			echo -e "[*]Pulling Docker Image for Local Console"
 			echo -e "ENTER INTERFACE NAME: \c"
 			read -r INTERFACE
@@ -171,27 +171,27 @@ services:
 			sudo mkdir -p /DNIF
 			sudo mkdir -p /DNIF/LC
 			sudo echo -e "version: "\'2.0\'"
-			services:
-			 console:
-			  image: dnif/console:v9beta2.2
-			  network_mode: "\'host\'"
-			  restart: unless-stopped
-			  cap_add:
-			   - NET_ADMIN
-			  environment:
-			   - "\'NET_INTERFACE="$INTERFACE"\'"
-			  volumes:
-			   - /dnif/LC:/dnif/lc
-			  container_name: console-v9" >/dnif/LC/docker-compose.yaml
-			  cd /dnif/LC || exit
-			  #docker-compose up -d
+services:
+ console:
+  image: dnif/console:v9beta2.2
+  network_mode: "\'host\'"
+  restart: unless-stopped
+  cap_add:
+   - NET_ADMIN
+  environment:
+   - "\'NET_INTERFACE="$INTERFACE"\'"
+  volumes:
+   - /dnif/LC:/dnif/lc
+  container_name: console-v9" >/DNIF/LC/docker-compose.yaml
+			  cd /DNIF/LC || exit
+			  docker-compose up -d
 			  ;;
-		DL)
+		DN)
 			echo -e "[*] Installing the DATA NODE \n"
 			sleep 5
 			echo -e "[*] Finding docker installation\n"
 			if [ -x "$(command -v docker)" ]; then
-				echo "Updating Docker"
+				echo "[*] Updating Docker"
 				docker_check
 			else
 				echo -e "[*] Finding docker installation - NEGATIVE\n"
@@ -225,7 +225,7 @@ services:
 			fi
 			sleep 5
 			echo -e "[*]Pulling Docker Image for Data Node"
-			docker pull dnif/datanode:v9beta2.2
+			#docker pull dnif/datanode:v9beta2.2
 			echo -e "ENTER CORE IP: \c\n"
 			read -r COREIP
 			echo -e "\nENter INTERFACE NAME"
@@ -233,31 +233,31 @@ services:
 			sudo mkdir -p /DNIF
 			sudo mkdir -p /DNIF/DL
 			sudo echo -e "version: "\'2\'"
-			services:
-			  datanode:
-			    privileged: true
-			    image: dnif/datanode:v9beta2
-			    network_mode: "\'host\'"
-			    restart: unless-stopped
-			    cap_add:
-			      - NET_ADMIN
-			    volumes:
-			      - /DL:/dnif
-			      - /run:/run
-			      - /opt:/opt
-			      - /etc/systemd/system:/etc/systemd/system
-			      - /common:/common
-			      - /backup:/backup
-			    environment:
-			      - "\'CORE_IP="$COREIP"\'"
-			      - "\'NET_INTERFACE="$INTERFACE"\'"
-			    ulimits:
-			      memlock:
-			        soft: -1
-				hard: -1
-			    container_name: datanode-v9" >/dnif/DL/docker-compose.yaml
+services:
+  datanode:
+    privileged: true
+    image: dnif/datanode:v9beta2
+    network_mode: "\'host\'"
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - /DL:/dnif
+      - /run:/run
+      - /opt:/opt
+      - /etc/systemd/system:/etc/systemd/system
+      - /common:/common
+      - /backup:/backup
+    environment:
+      - "\'CORE_IP="$COREIP"\'"
+      - "\'NET_INTERFACE="$INTERFACE"\'"
+    ulimits:
+      memlock:
+        soft: -1
+         hard: -1
+    container_name: datanode-v9" >/DNIF/DL/docker-compose.yaml
 			    cd /DNIF/DL || exit
-			    #docker-compose up -d
+			    docker-compose up -d
 			    ;;
 		esac
 
