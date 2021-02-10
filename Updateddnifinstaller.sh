@@ -1,11 +1,11 @@
 #!/bin/bash
 ARCH=$(uname -m)
 if [ "$ARCH" = "i686" ]; then
-  echo -e "Upgade your system to 64 bit Architecture"
+  echo  "Upgade your system to 64 bit Architecture"
   exit 0
 fi
 if [ "$ARCH" = "x86_64" ]; then
-  echo -e "Your Architecture is 64-Bit"
+  echo  "Your Architecture is 64-Bit"
   echo -e "1. CORE \n"
   echo -e "2. DL \n"
   echo -e "3. AD \n"
