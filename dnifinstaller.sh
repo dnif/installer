@@ -191,6 +191,7 @@ vm.max_map_count=262144
 net.core.rmem_default=33554432
 net.core.rmem_max=33554432">>/etc/sysctl.conf
     sysctl -p
+    ufw reset
     ;;
        
 esac
