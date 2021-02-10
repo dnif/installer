@@ -13,7 +13,7 @@ if [ "$ARCH" = "x86_64" ]; then
  echo -e "5. DOCKER \n"
  echo -e "ENTER COMPONENT NAME:  \n "
  read COMP
- case ${COMP^^} in
+ case "${COMP^^}" in
 
   CORE)
     echo -e "ITS CORE..\n"
