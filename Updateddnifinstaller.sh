@@ -61,7 +61,7 @@ services:
         apt-get install openjdk-11-jdk
       else
         echo "Aborted"
-        break
+        exit 0
       fi
     fi
 
