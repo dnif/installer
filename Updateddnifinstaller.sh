@@ -57,7 +57,7 @@ services:
       echo -e "\n To proceed futher you have to  Install openjdk11 before installtion\n\n"
       echo "To install OpenJdk11 type YES"
       read var
-      if [ $var =="YES"]; then
+      if [ $var == "YES" ]; then
         apt-get install openjdk-11-jdk
       else
         echo "Aborted"
