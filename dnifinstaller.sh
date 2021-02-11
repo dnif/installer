@@ -27,6 +27,7 @@ function docker_check() {
         count=$(sysctl -n vm.max_map_count)
 	if [ "$count" = "262144" ]; then
 		echo -e "max count set"
+		ufw reset &>/dev/null
 
 	else
 
@@ -39,6 +40,7 @@ function docker_check() {
 		net.core.rmem_max=33554432" >>/etc/sysctl.conf
 
 		sysctl -p
+		ufw reset &>dev/null
 	fi
 
 }
@@ -108,7 +110,7 @@ services:
     container_name: core-v9" >/DNIF/docker-compose.yml
 
 			      cd /DNIF || exit
-			      docker-compose up -d
+			      #docker-compose up -d
 			      ;;
 		AD)
 			echo -e "[*] Installing the ADAPTER \n"
@@ -146,7 +148,7 @@ services:
    - /backup:/backup
   container_name: adapter-v9" >/DNIF/AD/docker-compose.yaml
 			  cd /DNIF/AD || exit
-			  docker-compose up -d
+			  #docker-compose up -d
 			  ;;
 
 		LC)
@@ -184,7 +186,7 @@ services:
    - /dnif/LC:/dnif/lc
   container_name: console-v9" >/DNIF/LC/docker-compose.yaml
 			  cd /DNIF/LC || exit
-			  docker-compose up -d
+			  #docker-compose up -d
 			  ;;
 		DN)
 			echo -e "[*] Installing the DATA NODE \n"
@@ -207,19 +209,19 @@ services:
 				echo -e "\n\nfound java executable in $JAVA_HOME \n\n"
 				_java="$JAVA_HOME/bin/java"
 			else
-				echo -e "\n To proceed futher you have to  Install openjdk11 before installtion\n\n"
-				echo "To install OpenJdk11 type YES"
+				echo -e "\n [*]To proceed futher you have to  Install openjdk14 before installtion\n\n"
+				echo "[*]To install OpenJdk14 type YES"
 				read -r var
 				if [ "$var" == "YES" ]; then
-					apt-get install openjdk-11-jdk
+					apt-get -y install openjdk-14-jdk
 				else
-					echo "Aborted"
+					echo "[*]Aborted"
 					exit 0
 				fi
 			fi
 			if [[ "$_java" ]]; then
 				version=$("$_java" -version 2>&1 | awk -F '"' '/version/ {print $2}')
-				if [[ "$version" == "11.0.8" ]]; then
+				if [[ "$version" == "14.0.2" ]]; then
 					echo -e "\n OpenJdk $version version is running\n"
 				fi
 			fi
@@ -257,7 +259,7 @@ services:
          hard: -1
     container_name: datanode-v9" >/DNIF/DL/docker-compose.yaml
 			    cd /DNIF/DL || exit
-			    docker-compose up -d
+			    #docker-compose up -d
 			    ;;
 		esac
 
