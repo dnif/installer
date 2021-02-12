@@ -70,9 +70,8 @@ if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 18.04 by 
        #Copy your files here
        echo -e "[*] Tested distributions and architectures\n"
        echo -e "** Ubuntu 20.04 (LTS) x86_64\n\n"
-       echo -e "** Please report issues to https://github.com/dnif-backyard/installer/issues\n"
        echo -e "[*] Checking operating system for compatibility - DONE\n\n"
-       
+       echo -e "** Please report issues to https://github.com/dnif-backyard/installer/issues\n"
        echo -e "* Select a DNIF component you would like to install\n"
        echo -e "** for more information visit https://docs.dnif.it/v91/docs/high-level-dnif-architecture\n"
        echo -e "[1]- Core (CO) \n"
