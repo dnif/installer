@@ -4,35 +4,35 @@
 
 function docker_check() {
 	
-	sudo apt-get remove docker docker-engine docker.io containerd runc &>/dev/null
+	sudo apt-get remove docker docker-engine docker.io containerd runc 
 	sudo apt-get -y update &>/dev/null
 	sudo apt-get install \
     apt-transport-https \
     ca-certificates \
     curl \
     gnupg-agent \
-    software-properties-common &>/dev/null
-	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - &>/dev/null
-	sudo apt-key fingerprint 0EBFCD88 &>/dev/null
+    software-properties-common 
+	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - 
+	sudo apt-key fingerprint 0EBFCD88 
 	sudo add-apt-repository \
    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
    $(lsb_release -cs) \
-   stable" &>/dev/null
-	sudo apt-get -y update &>/dev/null
+   stable" 
+	sudo apt-get -y update 
 	echo -e "[*] Installing Docker-ce\n"
-	sudo apt-get -y install docker-ce docker-ce-cli containerd.io &>/dev/null
+	sudo apt-get -y install docker-ce docker-ce-cli containerd.io 
 	sleep 5
-        sudo docker run hello-world &>/dev/null
+        sudo docker run hello-world 
 	echo -e "[*] Hello from Docker\n"
         sleep 5
 	
-	sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose &>/dev/null
+	sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose 
 	sudo chmod +x /usr/local/bin/docker-compose 
 	echo -e "[*] Installing Docker-compose - DONE\n"
         count=$(sysctl -n vm.max_map_count)
 	if [ "$count" = "262144" ]; then
 		echo -e "[*] Operating system fine-tuning\n"
-		ufw reset &>/dev/null
+		ufw reset 
 
 	else
 
@@ -45,7 +45,7 @@ function docker_check() {
 		net.core.rmem_max=33554432" >>/etc/sysctl.conf
 
 		sysctl -p
-		ufw reset &>dev/null
+		ufw reset 
 	fi
 
 }
@@ -97,7 +97,7 @@ if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 18.04 by 
 				
 			fi
 			echo -e "[*] Pulling Docker Image for CORE\n"
-			docker pull dnif/core:v9beta2.2 &>/dev/null
+			docker pull dnif/core:v9beta2.2 
 			cd /
 			sudo mkdir -p DNIF
 			echo -e "Enter CORE IP:\c"
@@ -144,7 +144,7 @@ services:
 				
 			fi
 			echo -e "[*] Pulling Docker Image for Adapter\n"
-			docker pull dnif/adapter:v9beta2.2 &>/dev/null
+			docker pull dnif/adapter:v9beta2.2 
 			echo -e "ENTER CORE IP: \c"
 			read -r COREIP
 			cd /
@@ -186,7 +186,7 @@ services:
 				echo -e "[*] Finding Docker installation - DONE\n"
 				echo -e "[*] Finding Docker-compose - DONE\n"
 			fi
-			docker pull dnif/console:v9beta2.2 &>/dev/null
+			docker pull dnif/console:v9beta2.2 
 			echo -e "[*] Pulling Docker Image for Local Console\n"
 			echo -e "ENTER INTERFACE NAME: \c"
 			read -r INTERFACE
@@ -236,8 +236,9 @@ services:
 				echo -e "\n [*]To proceed futher you have to  Install openjdk14 before installtion\n\n"
 				echo "[*] To install OpenJdk14 type YES"
 				read -r var
-				if [ "$var" == "YES" ]; then
-					apt-get -y install openjdk-14-jdk &>/dev/null
+				temp=${var^^}
+				if [ "$temp" == "YES" ]; then
+					apt-get -y install openjdk-14-jdk 
 				else
 					echo "[*] Aborted"
 					exit 0
