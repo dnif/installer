@@ -281,7 +281,7 @@ services:
     ulimits:
       memlock:
         soft: -1
-         hard: -1
+        hard: -1
     container_name: datanode-v9" >/DNIF/DL/docker-compose.yml
 			    cd /DNIF/DL || exit
 			    echo -e "[*] Starting container... \n"
