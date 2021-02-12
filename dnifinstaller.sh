@@ -163,7 +163,7 @@ services:
   volumes:
    - /AD:/dnif
    - /backup:/backup
-  container_name: adapter-v9" >/DNIF/AD/docker-compose.yaml
+  container_name: adapter-v9" >/DNIF/AD/docker-compose.yml
 			  cd /DNIF/AD || exit
 			  echo -e "[*] Starting container...\n "
 			  docker-compose up -d
@@ -205,7 +205,7 @@ services:
    - "\'NET_INTERFACE="$INTERFACE"\'"
   volumes:
    - /dnif/LC:/dnif/lc
-  container_name: console-v9" >/DNIF/LC/docker-compose.yaml
+  container_name: console-v9" >/DNIF/LC/docker-compose.yml
 			  cd /DNIF/LC || exit
 			  echo -e "[*] Starting container... \n"
 			  docker-compose up -d
@@ -263,7 +263,7 @@ services:
 services:
   datanode:
     privileged: true
-    image: dnif/datanode:v9beta2
+    image: dnif/datanode:v9beta2.2
     network_mode: "\'host\'"
     restart: unless-stopped
     cap_add:
@@ -282,7 +282,7 @@ services:
       memlock:
         soft: -1
          hard: -1
-    container_name: datanode-v9" >/DNIF/DL/docker-compose.yaml
+    container_name: datanode-v9" >/DNIF/DL/docker-compose.yml
 			    cd /DNIF/DL || exit
 			    echo -e "[*] Starting container... \n"
 			    docker-compose up -d
