@@ -173,7 +173,7 @@ services:
 			  ;;
 
 		3)
-			echo -e "[*] Installing the Local Console \n"
+			echo -e "[*] Installing the Console \n"
 			sleep 5
 			echo -e "[*] Finding Docker installation\n"
 			if [ -x "$(command -v docker)" ]; then
@@ -187,7 +187,7 @@ services:
 				echo -e "[*] Finding Docker-compose - DONE\n"
 			fi
 			docker pull dnif/console:v9beta2.2 
-			echo -e "[*] Pulling Docker Image for Local Console\n"
+			echo -e "[*] Pulling Docker Image for Console\n"
 			echo -e "ENTER INTERFACE NAME: \c"
 			read -r INTERFACE
 			cd /
@@ -210,7 +210,7 @@ services:
 			  echo -e "[*] Starting container... \n"
 			  docker-compose up -d
 			  echo -e "[*] Starting container... DONE\n"
-			  echo -e "** Congratulations you have successfully installed the Local Console\n"
+			  echo -e "** Congratulations you have successfully installed the Console\n"
 			  ;;
 		4)
 			echo -e "[*] Installing the DATA NODE \n"
