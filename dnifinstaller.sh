@@ -3,7 +3,7 @@
 
 
 function docker_check() {
-	echo -e "[*] Installing Docker \n"
+	
 	sudo apt-get remove docker docker-engine docker.io containerd runc &>/dev/null
 	sudo apt-get -y update &>/dev/null
 	sudo apt-get install \
