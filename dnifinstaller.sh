@@ -126,6 +126,7 @@ services:
 			      echo -e "[*] Starting container... \n"
 			      docker-compose up -d
 			      echo -e "[*] Starting container... DONE\n"
+			      echo -e "** Congratulations you have successfully installed the CORE\n"
 			      ;;
 		2)
 			echo -e "[*] Installing the ADAPTER \n"
@@ -140,6 +141,7 @@ services:
 				docker_check
 				echo -e "[*] Finding Docker installation - DONE\n"
 				echo -e "[*] Finding Docker-compose - DONE\n"
+				
 			fi
 			echo -e "[*] Pulling Docker Image for Adapter\n"
 			docker pull dnif/adapter:v9beta2.2 &>/dev/null
@@ -166,6 +168,8 @@ services:
 			  echo -e "[*] Starting container...\n "
 			  docker-compose up -d
 			  echo -e "[*] Starting container... DONE\n"
+			  echo -e "** Congratulations you have successfully installed the Adapter\n"
+			  echo -e "**   Active the Adapter (10.2.1.4) from the components page\n"
 			  ;;
 
 		3)
@@ -206,6 +210,7 @@ services:
 			  echo -e "[*] Starting container... \n"
 			  docker-compose up -d
 			  echo -e "[*] Starting container... DONE\n"
+			  echo -e "** Congratulations you have successfully installed the Local Console\n"
 			  ;;
 		4)
 			echo -e "[*] Installing the DATA NODE \n"
@@ -281,6 +286,8 @@ services:
 			    echo -e "[*] Starting container... \n"
 			    docker-compose up -d
 			    echo -e "[*] Starting container... DONE"
+			    echo -e "** Congratulations you have successfully installed the Data Node\n"
+			    echo -e "**   Active the Data Node (10.2.1.4) from the components page\n"
 			    ;;
 		esac
 
