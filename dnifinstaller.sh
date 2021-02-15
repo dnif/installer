@@ -3,32 +3,34 @@
 
 
 function docker_check() {
-	
-	sudo apt-get remove docker docker-engine docker.io containerd runc 
-	sudo apt-get -y update 
-	sudo apt-get install \
+
+	version=$(docker --version |cut -c 16-22)
+	if [[ "$version" != "20.10.3" ]]; then
+		echo -e "[*] Updating Docker\n"
+		sudo apt-get remove docker docker-engine docker.io containerd runc
+		sudo apt-get -y update
+		sudo apt-get install \
     apt-transport-https \
     ca-certificates \
     curl \
     gnupg-agent \
-    software-properties-common 
-	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - 
-	sudo apt-key fingerprint 0EBFCD88 
-	sudo add-apt-repository \
+    software-properties-common
+		curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+		sudo apt-key fingerprint 0EBFCD88
+		sudo add-apt-repository \
    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
    $(lsb_release -cs) \
-   stable" 
-	sudo apt-get -y update 
-	echo -e "[*] Installing Docker-ce\n"
-	sudo apt-get -y install docker-ce docker-ce-cli containerd.io 
-	sleep 5
-        sudo docker run hello-world 
-	echo -e "[*] Hello from Docker\n"
-        sleep 5
-	
+   stable"
+		sudo apt-get update
+		echo -e "[*] Installing Docker-ce\n"
+		sudo apt-get install docker-ce docker-ce-cli containerd.io
+
+	fi
+	echo -e "[*] Finding Docker installation - DONE\n"
+	echo -e "[*] Installing Docker-compose\n"
 	sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose 
 	sudo chmod +x /usr/local/bin/docker-compose 
-	echo -e "[*] Installing Docker-compose - DONE\n"
+	echo -e "[**] Installing Docker-compose - DONE\n"
         count=$(sysctl -n vm.max_map_count)
 	if [ "$count" = "262144" ]; then
 		echo -e "[*] Operating system fine-tuning\n"
@@ -87,7 +89,7 @@ if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 20.04 by 
 		       sleep 2
 		       echo -e "[*] Finding Docker installation\n"
 		       if [ -x "$(command -v docker)" ]; then
-			       echo -e "[*] Updating Docker\n"
+			       #echo -e "[*] Updating Docker\n"
 			       docker_check
 			else
 				echo -e "[*] Finding Docker installation - NEGATIVE\n"
@@ -189,7 +191,7 @@ services:
 			sleep 5
 			echo -e "[*] Finding Docker installation\n"
 			if [ -x "$(command -v docker)" ]; then
-				echo "[*] Updating Docker\n"
+				#echo "[*] Updating Docker\n"
 				docker_check
 			else
 				echo -e "[*] Finding Docker installation - NEGATIVE\n"
@@ -230,7 +232,7 @@ services:
 			sleep 5
 			echo -e "[*] Finding Docker installation\n"
 			if [ -x "$(command -v docker)" ]; then
-				echo -e "[*] Updating Docker\n"
+				#echo -e "[*] Updating Docker\n"
 				docker_check
 			else
 				echo -e "[*] Finding Docker installation - NEGATIVE\n"
@@ -314,7 +316,7 @@ services:
 			sleep 5
 			echo -e "[*] Finding Docker installation\n"
 			if [ -x "$(command -v docker)" ]; then
-				echo -e "[*] Updating Docker\n"
+				#echo -e "[*] Updating Docker\n"
 				docker_check
 			else
 				echo -e "[*] Finding Docker installation - NEGATIVE\n"
