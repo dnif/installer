@@ -79,7 +79,7 @@ if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 18.04 by 
        echo -e "[3]- Console (LC) \n"
        echo -e "[4]- Data Node (DN) \n"
        echo -e "Pick the number corresponding to the component (1 - 4): "
-       read -r COMP
+       read -p COMP
        echo -e "-----------------------------------------------------------------------------------------"
        case "${COMP^^}" in
 	       1)
