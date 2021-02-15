@@ -126,8 +126,11 @@ if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 20.04 by 
 			docker pull dnif/datanode:v9beta2.2
 			cd /
 			sudo mkdir -p DNIF
-			echo -e "Enter CORE IP:\c"
-			read -r COIP
+			COREIP=""
+			while [[ ! $COREIP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; do
+				echo -e "ENTER CORE IP: \c"
+				read -r COREIP
+			done
 			echo -e "\nENter INTERFACE NAME"
 			read -r INTERFACE
 			sudo echo -e "version: "\'2.0\'"
@@ -263,8 +266,11 @@ services:
 			sleep 5
 			echo -e "[*] Pulling Docker Image for Data Node\n"
 			docker pull dnif/datanode:v9beta2.2
-			echo -e "ENTER CORE IP: \c\n"
-			read -r COREIP
+			COREIP=""
+			while [[ ! $COREIP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; do
+				echo -e "ENTER CORE IP: \c"
+				read -r COREIP
+			done
 			echo -e "\nENter INTERFACE NAME"
 			read -r INTERFACE
 			sudo mkdir -p /DNIF
