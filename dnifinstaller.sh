@@ -234,7 +234,7 @@ services:
 				_java="$JAVA_HOME/bin/java"
 			else
 				echo -e "\n [*]To proceed futher you have to  Install openjdk14 before installtion\n\n"
-				echo "[*] To install OpenJdk14 type YES"
+				echo "[*] To install OpenJdk14 type YES or NO"
 				read -r var
 				temp=${var^^}
 				if [ "$temp" == "YES" ]; then
