@@ -6,9 +6,12 @@ function docker_check() {
 
 	version=$(docker --version |cut -c 16-22)
 	if [[ "$version" != "20.10.3" ]]; then
-		echo -e "[*] Updating Docker\n"
+		echo -e "[*] Finding docker installation - found incompatible version\n"
+		#echo -e "[*] Updating Docker\n"
+		echo -e "[*] Uninstalling Docker\n"
 		sudo apt-get remove docker docker-engine docker.io containerd runc
 		sudo apt-get -y update
+		echo -e "[*] Installing docker-ce\n"
 		sudo apt-get install \
     apt-transport-https \
     ca-certificates \
@@ -27,10 +30,15 @@ function docker_check() {
 
 	fi
 	echo -e "[*] Finding Docker installation - DONE\n"
-	echo -e "[*] Installing Docker-compose\n"
-	sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose 
-	sudo chmod +x /usr/local/bin/docker-compose 
-	echo -e "[**] Installing Docker-compose - DONE\n"
+	version=$(docker-compose --version |cut -c 24-29)
+	if [[ "$version" != "1.23.1" ]]; then
+		echo -e "[*] Installing Docker-compose\n"
+		sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose 
+		sudo chmod +x /usr/local/bin/docker-compose 
+		echo -e "[*] Installing Docker-compose - DONE\n"
+	else
+		echo -e "[*] Docker-compose up-to-date\n"
+	fi
         count=$(sysctl -n vm.max_map_count)
 	if [ "$count" = "262144" ]; then
 		echo -e "[*] Operating system fine-tuning\n"
