@@ -75,9 +75,9 @@ if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 20.04 by 
        echo -e "* Select a DNIF component you would like to install\n"
        echo -e "** for more information visit https://docs.dnif.it/v91/docs/high-level-dnif-architecture\n"
        echo -e "[1]- Core (CO) AND Data Node Master\n"
-       echo -e "[2]- Adapter (AD) \n"
-       echo -e "[3]- Local Console (LC) \n"
-       echo -e "[4]- Data Node (DN) \n"
+       echo -e "[2]- Console (LC) \n"
+       echo -e "[3]- Data Node (DN) \n"
+       echo -e "[4]- Adapter (AD)\n"
        read -p "Pick the number corresponding to the component (1 - 4): " COMP
        #read -r COMP
        echo -e "-----------------------------------------------------------------------------------------"
@@ -176,54 +176,13 @@ services:
 			      echo -e "[*] Starting container... \n"
 			      docker-compose up -d
 			      echo -e "[*] Starting container... DONE\n"
+			      docker ps
 			      echo -e "** Congratulations you have successfully installed the CORE\n"
 			      ;;
-		2)
-			echo -e "[*] Installing the ADAPTER \n"
-			sleep 5
-			echo -e "[*] Finding Docker installation\n"
-			if [ -x "$(command -v docker)" ]; then
-				echo -e "[*] Updating Docker\n"
-				docker_check
-			else
-				echo -e "[*] Finding Docker installation - NEGATIVE\n"
-				echo -e "[*] Installaing Docker\n"
-				docker_check
-				echo -e "[*] Finding Docker installation - DONE\n"
-				echo -e "[*] Finding Docker-compose - DONE\n"
-				
-			fi
-			echo -e "[*] Pulling Docker Image for Adapter\n"
-			docker pull dnif/adapter:v9beta2.2 
-			echo -e "ENTER CORE IP: \c"
-			read -r COREIP
-			cd /
-			sudo mkdir -p /DNIF
-			sudo mkdir -p /DNIF/AD
-			sudo echo -e "version: "\'2.0\'"
-services:
- adapter:
-  image: dnif/adapter:v9beta2.2
-  network_mode: "\'host\'"
-  restart: unless-stopped
-  cap_add:
-   - NET_ADMIN
-  environment:
-   - "\'CORE_IP="$COREIP"\'"
-  volumes:
-   - /AD:/dnif
-   - /backup:/backup
-  container_name: adapter-v9" >/DNIF/AD/docker-compose.yml
-			  cd /DNIF/AD || exit
-			  echo -e "[*] Starting container...\n "
-			  docker-compose up -d
-			  echo -e "[*] Starting container... DONE\n"
-			  echo -e "** Congratulations you have successfully installed the Adapter\n"
-			  echo -e "**   Active the Adapter (10.2.1.4) from the components page\n"
-			  ;;
+			    
 
-		3)
-			echo -e "[*] Installing the Local Console \n"
+		2)
+			echo -e "[*] Installing the Console \n"
 			sleep 5
 			echo -e "[*] Finding Docker installation\n"
 			if [ -x "$(command -v docker)" ]; then
@@ -237,7 +196,7 @@ services:
 				echo -e "[*] Finding Docker-compose - DONE\n"
 			fi
 			docker pull dnif/console:v9beta2.2 
-			echo -e "[*] Pulling Docker Image for Local Console\n"
+			echo -e "[*] Pulling Docker Image for Console\n"
 			echo -e "ENTER INTERFACE NAME: \c"
 			read -r INTERFACE
 			cd /
@@ -260,9 +219,10 @@ services:
 			  echo -e "[*] Starting container... \n"
 			  docker-compose up -d
 			  echo -e "[*] Starting container... DONE\n"
-			  echo -e "** Congratulations you have successfully installed the Local Console\n"
+			  docker ps
+			  echo -e "** Congratulations you have successfully installed the Console\n"
 			  ;;
-		4)
+		3)
 			echo -e "[*] Installing the DATA NODE \n"
 			sleep 5
 			echo -e "[*] Finding Docker installation\n"
@@ -337,9 +297,57 @@ services:
 			    echo -e "[*] Starting container... \n"
 			    docker-compose up -d
 			    echo -e "[*] Starting container... DONE"
+			    docker ps
 			    echo -e "** Congratulations you have successfully installed the Data Node\n"
 			    echo -e "**   Active the Data Node (10.2.1.4) from the components page\n"
 			    ;;
+			    
+
+		4)
+			echo -e "[*] Installing the ADAPTER \n"
+			sleep 5
+			echo -e "[*] Finding Docker installation\n"
+			if [ -x "$(command -v docker)" ]; then
+				echo -e "[*] Updating Docker\n"
+				docker_check
+			else
+				echo -e "[*] Finding Docker installation - NEGATIVE\n"
+				echo -e "[*] Installaing Docker\n"
+				docker_check
+				echo -e "[*] Finding Docker installation - DONE\n"
+				echo -e "[*] Finding Docker-compose - DONE\n"
+				
+			fi
+			echo -e "[*] Pulling Docker Image for Adapter\n"
+			docker pull dnif/adapter:v9beta2.2 
+			echo -e "ENTER CORE IP: \c"
+			read -r COREIP
+			cd /
+			sudo mkdir -p /DNIF
+			sudo mkdir -p /DNIF/AD
+			sudo echo -e "version: "\'2.0\'"
+services:
+ adapter:
+  image: dnif/adapter:v9beta2.2
+  network_mode: "\'host\'"
+  restart: unless-stopped
+  cap_add:
+   - NET_ADMIN
+  environment:
+   - "\'CORE_IP="$COREIP"\'"
+  volumes:
+   - /AD:/dnif
+   - /backup:/backup
+  container_name: adapter-v9" >/DNIF/AD/docker-compose.yml
+			  cd /DNIF/AD || exit
+			  echo -e "[*] Starting container...\n "
+			  docker-compose up -d
+			  echo -e "[*] Starting container... DONE\n"
+			  docker ps
+			  echo -e "** Congratulations you have successfully installed the Adapter\n"
+			  echo -e "**   Active the Adapter (10.2.1.4) from the components page\n"
+			  ;;
+
 		esac
 
 	
