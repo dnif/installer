@@ -64,7 +64,7 @@ echo -e "** for more information and code visit https://github.com/dnif-backyard
 echo -e "[*] Checking operating system for compatibility...\n"
 
 
-if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 18.04 by the number of release you want
+if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 20.04 by the number of release you want
 
        echo -e "[*] Compatible version\n"
        #Copy your files here
