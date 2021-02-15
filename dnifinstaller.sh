@@ -5,7 +5,7 @@
 function docker_check() {
 	
 	sudo apt-get remove docker docker-engine docker.io containerd runc 
-	sudo apt-get -y update &>/dev/null
+	sudo apt-get -y update 
 	sudo apt-get install \
     apt-transport-https \
     ca-certificates \
@@ -74,18 +74,18 @@ if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 18.04 by 
        echo -e "** Please report issues to https://github.com/dnif-backyard/installer/issues\n"
        echo -e "* Select a DNIF component you would like to install\n"
        echo -e "** for more information visit https://docs.dnif.it/v91/docs/high-level-dnif-architecture\n"
-       echo -e "[1]- Core (CO) \n"
+       echo -e "[1]- Core (CO) AND Data Node Master\n"
        echo -e "[2]- Adapter (AD) \n"
-       echo -e "[3]- Console (LC) \n"
+       echo -e "[3]- Local Console (LC) \n"
        echo -e "[4]- Data Node (DN) \n"
        read -p "Pick the number corresponding to the component (1 - 4): " COMP
-       #read -p COMP
+       #read -r COMP
        echo -e "-----------------------------------------------------------------------------------------"
        case "${COMP^^}" in
 	       1)
 		       echo -e "[*] Installing the CORE \n"
 		       sleep 2
-		       echo -e "[*] Finding docker installation\n"
+		       echo -e "[*] Finding Docker installation\n"
 		       if [ -x "$(command -v docker)" ]; then
 			       echo -e "[*] Updating Docker\n"
 			       docker_check
@@ -96,12 +96,40 @@ if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 18.04 by 
 				echo -e "[*] Finding Docker installation - DONE\n"
 				
 			fi
+			echo -e "[*] Checking for JDK \n"
+			if type -p java; then
+				_java=java
+			elif [[ -n "$JAVA_HOME" ]] && [[ -x "$JAVA_HOME/bin/java" ]]; then
+				echo -e "\n\nfound java executable in $JAVA_HOME \n\n"
+				_java="$JAVA_HOME/bin/java"
+			else
+				echo -e "\n [*]To proceed futher you have to  Install openjdk14 before installtion\n\n"
+				echo "[*] To install OpenJdk14 type YES or NO"
+				read -r var
+				temp=${var^^}
+				if [ "$temp" == "YES" ]; then
+					apt-get -y install openjdk-14-jdk 
+				else
+					echo "[*] Aborted"
+					exit 0
+				fi
+			fi
+			if [[ "$_java" ]]; then
+				version=$("$_java" -version 2>&1 | awk -F '"' '/version/ {print $2}')
+				if [[ "$version" == "14.0.2" ]]; then
+					echo -e "\n OpenJdk $version version is running\n"
+				fi
+			fi
 			echo -e "[*] Pulling Docker Image for CORE\n"
 			docker pull dnif/core:v9beta2.2 
+			echo -e "[*] Pulling Docker Image for Data Node\n"
+			docker pull dnif/datanode:v9beta2.2
 			cd /
 			sudo mkdir -p DNIF
 			echo -e "Enter CORE IP:\c"
 			read -r COIP
+			echo -e "\nENter INTERFACE NAME"
+			read -r INTERFACE
 			sudo echo -e "version: "\'2.0\'"
 services:
   core:
@@ -120,7 +148,29 @@ services:
       memlock:
         soft: -1
         hard: -1
-    container_name: core-v9" >/DNIF/docker-compose.yml
+    container_name: core-v9
+  datanode-master:
+    privileged: true
+    image: dnif/datanode:v9beta2.2
+    network_mode: "\'host\'"
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - /DL:/dnif
+      - /run:/run
+      - /opt:/opt
+      - /etc/systemd/system:/etc/systemd/system
+      - /common:/common
+      - /backup:/backup
+    environment:
+      - "\'CORE_IP="$COIP"\'"
+      - "\'NET_INTERFACE="$INTERFACE"\'"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    container_name: datanode-master-v9" >/DNIF/docker-compose.yml
 
 			      cd /DNIF || exit
 			      echo -e "[*] Starting container... \n"
@@ -173,7 +223,7 @@ services:
 			  ;;
 
 		3)
-			echo -e "[*] Installing the Console \n"
+			echo -e "[*] Installing the Local Console \n"
 			sleep 5
 			echo -e "[*] Finding Docker installation\n"
 			if [ -x "$(command -v docker)" ]; then
@@ -187,7 +237,7 @@ services:
 				echo -e "[*] Finding Docker-compose - DONE\n"
 			fi
 			docker pull dnif/console:v9beta2.2 
-			echo -e "[*] Pulling Docker Image for Console\n"
+			echo -e "[*] Pulling Docker Image for Local Console\n"
 			echo -e "ENTER INTERFACE NAME: \c"
 			read -r INTERFACE
 			cd /
@@ -205,12 +255,12 @@ services:
    - "\'NET_INTERFACE="$INTERFACE"\'"
   volumes:
    - /dnif/LC:/dnif/lc
-  container_name: console-v9" >/DNIF/LC/docker-compose.yml
+  container_name: console-v9" >/DNIF/LC/docker-compose.yaml
 			  cd /DNIF/LC || exit
 			  echo -e "[*] Starting container... \n"
 			  docker-compose up -d
 			  echo -e "[*] Starting container... DONE\n"
-			  echo -e "** Congratulations you have successfully installed the Console\n"
+			  echo -e "** Congratulations you have successfully installed the Local Console\n"
 			  ;;
 		4)
 			echo -e "[*] Installing the DATA NODE \n"
@@ -234,7 +284,7 @@ services:
 				_java="$JAVA_HOME/bin/java"
 			else
 				echo -e "\n [*]To proceed futher you have to  Install openjdk14 before installtion\n\n"
-				echo "[*] To install OpenJdk14 type YES"
+				echo "[*] To install OpenJdk14 type YES or NO"
 				read -r var
 				temp=${var^^}
 				if [ "$temp" == "YES" ]; then
@@ -282,7 +332,7 @@ services:
       memlock:
         soft: -1
         hard: -1
-    container_name: datanode-v9" >/DNIF/DL/docker-compose.yml
+    container_name: datanode-v9" >/DNIF/DL/docker-compose.yaml
 			    cd /DNIF/DL || exit
 			    echo -e "[*] Starting container... \n"
 			    docker-compose up -d
