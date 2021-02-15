@@ -320,8 +320,10 @@ services:
 			fi
 			echo -e "[*] Pulling Docker Image for Adapter\n"
 			docker pull dnif/adapter:v9beta2.2 
-			echo -e "ENTER CORE IP: \c"
-			read -r COREIP
+			#echo -e "ENTER CORE IP: \c"
+			while [[ ! $number =~ ^[0-9]+$ ]]; do
+			     echo -e "ENTER CORE IP: \c"
+			     read -r COREIP
 			cd /
 			sudo mkdir -p /DNIF
 			sudo mkdir -p /DNIF/AD
