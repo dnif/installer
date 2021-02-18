@@ -127,7 +127,7 @@ if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 20.04 by 
 			if [[ "$_java" ]]; then
 				version=$("$_java" -version 2>&1 | awk -F '"' '/version/ {print $2}')
 				if [[ "$version" == "14.0.2" ]]; then
-					echo -e "\n OpenJdk $version version is running\n"
+					echo -e "[*] OpenJdk $version version is running\n"
 				fi
 			fi
 			echo -e "[*] Pulling Docker Image for CORE\n"
@@ -270,7 +270,7 @@ services:
 			if [[ "$_java" ]]; then
 				version=$("$_java" -version 2>&1 | awk -F '"' '/version/ {print $2}')
 				if [[ "$version" == "14.0.2" ]]; then
-					echo -e "\n OpenJdk $version version is running\n"
+					echo -e "[*] OpenJdk $version version is running\n"
 				fi
 			fi
 			sleep 5
