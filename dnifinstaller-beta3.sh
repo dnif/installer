@@ -68,7 +68,7 @@ ARCH=$(uname -m)
 VER=$(lsb_release -rs)
 
 
-echo -e "* DNIF Installer for v9.1beta2\n"
+echo -e "* DNIF Installer for v9.1beta3\n"
 echo -e "** for more information and code visit https://github.com/dnif-backyard/installer\n\n"
 
 echo -e "[*] Checking operating system for compatibility...\n"
@@ -131,9 +131,9 @@ if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 20.04 by 
 				fi
 			fi
 			echo -e "[*] Pulling Docker Image for CORE\n"
-			docker pull dnif/core:v9beta2.2 
+			docker pull dnif/core:v9beta3		# replace tag by the number of release you want
 			echo -e "[*] Pulling Docker Image for Data Node\n"
-			docker pull dnif/datanode:v9beta2.2    # replace tag by the number of release you want
+			docker pull dnif/datanode:v9beta3		# replace tag by the number of release you want
 			cd /
 			sudo mkdir -p DNIF
 			COREIP=""
@@ -141,12 +141,10 @@ if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 20.04 by 
 				echo -e "ENTER CORE IP: \c"
 				read -r COREIP
 			done
-			echo -e "\nENTER INTERFACE NAME: \c"
-			read -r INTERFACE
 			sudo echo -e "version: "\'2.0\'"
 services:
   core:
-    image: dnif/core:v9beta2.2
+    image: dnif/core:v9beta3
     network_mode: "\'host\'"
     restart: unless-stopped
     cap_add:
@@ -164,7 +162,7 @@ services:
     container_name: core-v9
   datanode-master:
     privileged: true
-    image: dnif/datanode:v9beta2.2
+    image: dnif/datanode:v9beta3
     network_mode: "\'host\'"
     restart: unless-stopped
     cap_add:
@@ -178,7 +176,6 @@ services:
       - /backup:/backup
     environment:
       - "\'CORE_IP="$COREIP"\'"
-      - "\'NET_INTERFACE="$INTERFACE"\'"
     ulimits:
       memlock:
         soft: -1
@@ -209,22 +206,18 @@ services:
 				echo -e "[*] Finding Docker-compose - DONE\n"
 			fi
 			echo -e "[*] Pulling Docker Image for Console\n"
-			docker pull dnif/console:v9beta2.2   	# replace tag by the number of release you want
-			echo -e "ENTER INTERFACE NAME: \c"
-			read -r INTERFACE
+			docker pull dnif/console:v9beta3 		# replace tag by the number of release you want
 			cd /
 			sudo mkdir -p /DNIF
 			sudo mkdir -p /DNIF/LC
 			sudo echo -e "version: "\'2.0\'"
 services:
  console:
-  image: dnif/console:v9beta2.2
+  image: dnif/console:v9beta3
   network_mode: "\'host\'"
   restart: unless-stopped
   cap_add:
    - NET_ADMIN
-  environment:
-   - "\'NET_INTERFACE="$INTERFACE"\'"
   volumes:
    - /dnif/LC:/dnif/lc
   container_name: console-v9" >/DNIF/LC/docker-compose.yaml
@@ -253,7 +246,7 @@ services:
 			if type -p java; then
 				_java=java
 			elif [[ -n "$JAVA_HOME" ]] && [[ -x "$JAVA_HOME/bin/java" ]]; then
-				echo -e "\n\nfound java executable in $JAVA_HOME \n\n"
+				echo -e "\nfound java executable in $JAVA_HOME \n"
 				_java="$JAVA_HOME/bin/java"
 			else
 				echo -e "[*] To proceed futher you have to  Install openjdk14 before installtion\n"
@@ -275,21 +268,19 @@ services:
 			fi
 			sleep 5
 			echo -e "[*] Pulling Docker Image for Data Node\n"
-			docker pull dnif/datanode:v9beta2.2		# replace tag by the number of release you want
+			docker pull dnif/datanode:v9beta3		# replace tag by the number of release you want
 			COREIP=""
 			while [[ ! $COREIP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; do
 				echo -e "ENTER CORE IP: \c"
 				read -r COREIP
 			done
-			echo -e "\nENTER INTERFACE NAME: \c"
-			read -r INTERFACE
 			sudo mkdir -p /DNIF
 			sudo mkdir -p /DNIF/DL
 			sudo echo -e "version: "\'2\'"
 services:
   datanode:
     privileged: true
-    image: dnif/datanode:v9beta2.2
+    image: dnif/datanode:v9beta3
     network_mode: "\'host\'"
     restart: unless-stopped
     cap_add:
@@ -303,7 +294,6 @@ services:
       - /backup:/backup
     environment:
       - "\'CORE_IP="$COREIP"\'"
-      - "\'NET_INTERFACE="$INTERFACE"\'"
     ulimits:
       memlock:
         soft: -1
@@ -335,7 +325,7 @@ services:
 				
 			fi
 			echo -e "[*] Pulling Docker Image for Adapter\n"
-			docker pull dnif/adapter:v9beta2.2 		# replace tag by the number of release you want
+			docker pull dnif/adapter:v9beta3		# replace tag by the number of release you want
 			#echo -e "ENTER CORE IP: \c"
 			COREIP=""
 			while [[ ! $COREIP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; do
@@ -348,7 +338,7 @@ services:
 			sudo echo -e "version: "\'2.0\'"
 services:
  adapter:
-  image: dnif/adapter:v9beta2.2
+  image: dnif/adapter:v9beta3
   network_mode: "\'host\'"
   restart: unless-stopped
   cap_add:
