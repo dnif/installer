@@ -113,7 +113,7 @@ if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 20.04 by 
 				echo -e "\n\nfound java executable in $JAVA_HOME \n\n"
 				_java="$JAVA_HOME/bin/java"
 			else
-				echo -e "\n [*]To proceed futher you have to  Install openjdk14 before installtion\n\n"
+				echo -e "[*]To proceed futher you have to  Install openjdk14 before installtion\n"
 				echo "[*] To install OpenJdk14 type YES or NO"
 				read -r var
 				temp=${var^^}
@@ -256,7 +256,7 @@ services:
 				echo -e "\n\nfound java executable in $JAVA_HOME \n\n"
 				_java="$JAVA_HOME/bin/java"
 			else
-				echo -e "\n [*]To proceed futher you have to  Install openjdk14 before installtion\n\n"
+				echo -e "[*]To proceed futher you have to  Install openjdk14 before installtion\n"
 				echo "[*] To install OpenJdk14 type YES or NO"
 				read -r var
 				temp=${var^^}
