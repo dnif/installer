@@ -156,7 +156,7 @@ services:
       - /common:/common
       - /backup:/backup
     environment:
-      - "\'CORE_IP="$COIP"\'"
+      - "\'CORE_IP="$COREIP"\'"
     ulimits:
       memlock:
         soft: -1
@@ -177,7 +177,7 @@ services:
       - /common:/common
       - /backup:/backup
     environment:
-      - "\'CORE_IP="$COIP"\'"
+      - "\'CORE_IP="$COREIP"\'"
       - "\'NET_INTERFACE="$INTERFACE"\'"
     ulimits:
       memlock:
