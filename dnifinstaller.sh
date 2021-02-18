@@ -141,7 +141,7 @@ if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 20.04 by 
 				echo -e "ENTER CORE IP: \c"
 				read -r COREIP
 			done
-			echo -e "\nENter INTERFACE NAME"
+			echo -e "\nENter INTERFACE NAME: \c"
 			read -r INTERFACE
 			sudo echo -e "version: "\'2.0\'"
 services:
@@ -281,7 +281,7 @@ services:
 				echo -e "ENTER CORE IP: \c"
 				read -r COREIP
 			done
-			echo -e "\nENter INTERFACE NAME"
+			echo -e "\nENter INTERFACE NAME: \c"
 			read -r INTERFACE
 			sudo mkdir -p /DNIF
 			sudo mkdir -p /DNIF/DL
