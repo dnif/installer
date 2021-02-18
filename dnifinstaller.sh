@@ -110,7 +110,7 @@ if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 20.04 by 
 			if type -p java; then
 				_java=java
 			elif [[ -n "$JAVA_HOME" ]] && [[ -x "$JAVA_HOME/bin/java" ]]; then
-				echo -e "\n\nfound java executable in $JAVA_HOME \n\n"
+				echo -e "\nfound java executable in $JAVA_HOME \n"
 				_java="$JAVA_HOME/bin/java"
 			else
 				echo -e "[*] To proceed futher you have to  Install openjdk14 before installtion\n"
@@ -183,7 +183,7 @@ services:
       memlock:
         soft: -1
         hard: -1
-    container_name: datanode-master-v9" >/DNIF/docker-compose.yml
+    container_name: datanode-master-v9" >/DNIF/docker-compose.yaml
 
 			      cd /DNIF || exit
 			      echo -e "[*] Starting container... \n"
@@ -208,8 +208,8 @@ services:
 				echo -e "[*] Finding Docker installation - DONE\n"
 				echo -e "[*] Finding Docker-compose - DONE\n"
 			fi
-			docker pull dnif/console:v9beta2.2 
 			echo -e "[*] Pulling Docker Image for Console\n"
+			docker pull dnif/console:v9beta2.2 
 			echo -e "ENTER INTERFACE NAME: \c"
 			read -r INTERFACE
 			cd /
@@ -358,7 +358,7 @@ services:
   volumes:
    - /AD:/dnif
    - /backup:/backup
-  container_name: adapter-v9" >/DNIF/AD/docker-compose.yml
+  container_name: adapter-v9" >/DNIF/AD/docker-compose.yaml
 			  cd /DNIF/AD || exit
 			  echo -e "[*] Starting container...\n "
 			  docker-compose up -d
