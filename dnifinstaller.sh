@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -e
 
 
 function docker_check() {
@@ -89,16 +89,16 @@ if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 20.04 by 
        echo -e "** Please report issues to https://github.com/dnif-backyard/installer/issues\n"
        echo -e "* Select a DNIF component you would like to install\n"
        echo -e "** for more information visit https://docs.dnif.it/v91/docs/high-level-dnif-architecture\n"
-       echo -e "    [1] Core (CO) AND Data Node Master\n"
+       echo -e "    [1] Core (CO) \n"
        echo -e "    [2] Console (LC) \n"
-       echo -e "    [3] Data Node (DN) \n"
+       echo -e "    [3] Datanode (DN) \n"
        echo -e "    [4] Adapter (AD)\n"
        read -p "Pick the number corresponding to the component (1 - 4): " COMP
        #read -r COMP
        echo -e "-----------------------------------------------------------------------------------------"
        case "${COMP^^}" in
 	       1)
-		       echo -e "[-] Installing the CORE AND Data Node Master \n"
+		       echo -e "[-] Installing the CORE \n"
 		       sleep 2
 		       echo -e "[-] Finding docker installation\n"
 		       if [ -x "$(command -v docker)" ]; then
@@ -137,7 +137,7 @@ if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 20.04 by 
 			fi
 			echo -e "[-] Pulling docker Image for CORE\n"
 			docker pull dnif/core:v9beta2.2 
-			echo -e "[-] Pulling docker Image for Data Node\n"
+			echo -e "[-] Pulling docker Image for Datanode\n"
 			docker pull dnif/datanode:v9beta2.2    # replace tag by the number of release you want
 			cd /
 			sudo mkdir -p DNIF
@@ -195,7 +195,7 @@ services:
 			      docker-compose up -d
 			      echo -e "[-] Starting container... \e[1;32m[DONE] \e[0m\n"
 			      docker ps
-			      echo -e "** Congratulations you have successfully installed the CORE AND Data Node Master\n"
+			      echo -e "** Congratulations you have successfully installed the CORE\n"
 			      ;;
 			    
 
@@ -241,7 +241,7 @@ services:
 			  echo -e "** Congratulations you have successfully installed the Console\n"
 			  ;;
 		3)
-			echo -e "[-] Installing the DATA NODE \n"
+			echo -e "[-] Installing the Datanode \n"
 			sleep 5
 			echo -e "[-] Finding docker installation\n"
 			if [ -x "$(command -v docker)" ]; then
@@ -279,7 +279,7 @@ services:
 				fi
 			fi
 			sleep 5
-			echo -e "[-] Pulling docker Image for Data Node\n"
+			echo -e "[-] Pulling docker Image for Datanode\n"
 			docker pull dnif/datanode:v9beta2.2		# replace tag by the number of release you want
 			COREIP=""
 			while [[ ! $COREIP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; do
@@ -319,8 +319,8 @@ services:
 			    docker-compose up -d
 			    echo -e "[-] Starting container ... \e[1;32m[DONE] \e[0m"
 			    docker ps
-			    echo -e "** Congratulations you have successfully installed the Data Node\n"
-			    echo -e "**   Active the Data Node (10.2.1.4) from the components page\n"
+			    echo -e "** Congratulations you have successfully installed the Datanode\n"
+			    echo -e "**   Active the Datanode (10.2.1.4) from the components page\n"
 			    ;;
 			    
 
