@@ -6,12 +6,13 @@ function docker_check() {
 
 	version=$(docker --version |cut -c 16-22)
 	if [[ "$version" != "20.10.3" ]]; then
-		echo -e "[*] Finding docker installation - found incompatible version\n"
+		echo -e "[-] Finding docker installation - found incompatible version\n"
+		echo -e "      Found incompatible version ... \e[0;31m[ERROR] \e[0m\n"
 		#echo -e "[*] Updating Docker\n"
-		echo -e "[*] Uninstalling Docker\n"
+		echo -e "[-] Uninstalling Docker\n"
 		sudo apt-get remove docker docker-engine docker.io containerd runc
 		sudo apt-get -y update
-		echo -e "[*] Installing docker-ce\n"
+		echo -e "[-] Setting up docker-ce respositories\n"
 		sudo apt-get install \
     apt-transport-https \
     ca-certificates \
@@ -25,7 +26,7 @@ function docker_check() {
    $(lsb_release -cs) \
    stable"
 		sudo apt-get update
-		echo -e "[*] Installing Docker-ce\n"
+		echo -e "[-] Installing Docker-ce\n"
 		sudo apt-get install docker-ce docker-ce-cli containerd.io
 
 	fi
@@ -41,7 +42,7 @@ function docker_check() {
 	fi
         count=$(sysctl -n vm.max_map_count)
 	if [ "$count" = "262144" ]; then
-		echo -e "[*] Operating system fine-tuning\n"
+		echo -e "[*] Fine tuning the operating system\n"
 		ufw reset 
 
 	else
@@ -68,18 +69,18 @@ ARCH=$(uname -m)
 VER=$(lsb_release -rs)
 
 
-echo -e "* DNIF Installer for v9.1beta2\n"
-echo -e "** for more information and code visit https://github.com/dnif-backyard/installer\n\n"
+echo -e "DNIF Installer for v9.1beta2\n"
+echo -e "for more information and code visit https://github.com/dnif-backyard/installer\n\n"
 
-echo -e "[*] Checking operating system for compatibility...\n"
+echo -e "++ Checking operating system for compatibility...\n"
 
 
 if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 20.04 by the number of release you want
 
-       echo -e "[*] Compatible version\n"
+       echo -e "Operating system compatibility ... [OK] \n"
        #Copy your files here
-       echo -e "[*] Tested distributions and architectures\n"
-       echo -e "** Ubuntu 20.04 (LTS) x86_64\n\n"
+       echo -e "Architecture compatibility ... [OK] \n"
+       echo -e "** found Ubuntu 20.04 (LTS) x86_64\n\n"
        echo -e "[*] Checking operating system for compatibility - DONE\n\n"
        echo -e "** Please report issues to https://github.com/dnif-backyard/installer/issues\n"
        echo -e "* Select a DNIF component you would like to install\n"
@@ -93,7 +94,7 @@ if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 20.04 by 
        echo -e "-----------------------------------------------------------------------------------------"
        case "${COMP^^}" in
 	       1)
-		       echo -e "[*] Installing the CORE \n"
+		       echo -e "[*] Installing the CORE AND Data Node Master \n"
 		       sleep 2
 		       echo -e "[*] Finding Docker installation\n"
 		       if [ -x "$(command -v docker)" ]; then
@@ -190,7 +191,7 @@ services:
 			      docker-compose up -d
 			      echo -e "[*] Starting container... DONE\n"
 			      docker ps
-			      echo -e "** Congratulations you have successfully installed the CORE\n"
+			      echo -e "** Congratulations you have successfully installed the CORE AND Data Node Master\n"
 			      ;;
 			    
 
@@ -375,6 +376,6 @@ services:
 
 
 else
-       echo "Non-compatible version"
+       echo -e "\e[0;31m[ERROR] \e[0m Operating system is incompatible"
 fi
 
