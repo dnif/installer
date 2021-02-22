@@ -18,7 +18,7 @@ function compose_check() {
 		fi
 	else
 		echo -e "[-] Finding docker-compose installation - ... \e[1;31m[NEGATIVE] \e[0m\n"
-		echo -e "[-] Installaing docker-compose\n"
+		echo -e "[-] Installing docker-compose\n"
 		sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose &>> /DNIF/install.log
 		sudo chmod +x /usr/local/bin/docker-compose&>> /DNIF/install.log
         	echo -e "[-] Installing docker-compose - ... \e[1;32m[DONE] \e[0m\n"
@@ -44,7 +44,7 @@ function docker_check() {
 		fi
 	else
 		echo -e "[-] Finding docker installation - ... \e[1;31m[NEGATIVE] \e[0m\n"
-		echo -e "[-] Installaing docker\n"
+		echo -e "[-] Installing docker\n"
 		docker_install
 		echo -e "[-] Finding docker installation - ... \e[1;32m[DONE] \e[0m\n"
 	fi
@@ -52,7 +52,7 @@ function docker_check() {
 
 function docker_install() {
 	sudo apt-get -y update&>> /DNIF/install.log
-	echo -e "[-] Setting up docker-ce respositories\n"
+	echo -e "[-] Setting up docker-ce repositories\n"
 	sudo apt-get -y install \
     apt-transport-https \
     ca-certificates \
@@ -139,7 +139,7 @@ if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 20.04 by 
 				_java="$JAVA_HOME/bin/java"
 			else
 				default="Y"
-				echo -e "[-] To proceed futher you have to  Install openjdk14 before installtion\n"
+				echo -e "[-] To proceed further you have to install openjdk14 before installation\n"
 				read -p "[-] To install OpenJdk14 type [Y/n] " var
 				#read -r var
 				input=${var:-$default}
@@ -259,7 +259,7 @@ services:
 				_java="$JAVA_HOME/bin/java"
 			else
 				default="Y"
-				echo -e "[-] To proceed futher you have to  Install openjdk14 before installtion\n"
+				echo -e "[-] To proceed further you have to  install openjdk14 before installation\n"
 				read -p "[-] To install OpenJdk14 type [Y/n] " var
 				#read -r var
 				input=${var:-$default}
@@ -361,9 +361,3 @@ services:
 else
 	echo -e "\e[0;31m[ERROR] \e[0m Operating system is incompatible"
 fi
-
-		
-
-
-
-
