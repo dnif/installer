@@ -9,8 +9,8 @@ function compose_check() {
 			echo -n "[-] Finding docker-compose installation - found incompatible version"
 			echo -e "... \e[0;31m[ERROR] \e[0m\n"
 			echo -e "[-] Updating docker-compose\n"
-			sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-			sudo chmod +x /usr/local/bin/docker-compose
+			sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose &>> /DNIF/error.log
+			sudo chmod +x /usr/local/bin/docker-compose &>> /DNIF/error.log
 			echo -e "[-] Installing docker-compose - ... \e[1;32m[DONE] \e[0m\n"
 		else
 			echo -e "[-] docker-compose up-to-date\n"
@@ -19,8 +19,8 @@ function compose_check() {
 	else
 		echo -e "[-] Finding docker-compose installation - ... \e[1;31m[NEGATIVE] \e[0m\n"
 		echo -e "[-] Installaing docker-compose\n"
-		sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-		sudo chmod +x /usr/local/bin/docker-compose
+		sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose &>> /DNIF/error.log
+		sudo chmod +x /usr/local/bin/docker-compose&>> /DNIF/error.log
         	echo -e "[-] Installing docker-compose - ... \e[1;32m[DONE] \e[0m\n"
 	fi
 
@@ -36,7 +36,7 @@ function docker_check() {
 			echo -n "[-] Finding docker installation - found incompatible version"
 			echo -e "... \e[0;31m[ERROR] \e[0m\n"
 			echo -e "[-] Uninstalling docker\n"
-			sudo apt-get remove docker docker-engine docker.io containerd runc
+			sudo apt-get remove docker docker-engine docker.io containerd runc&>> /DNIF/error.log
 			docker_install
 		else
 			echo -e "[-] docker up-to-date\n"
@@ -51,23 +51,23 @@ function docker_check() {
 }
 
 function docker_install() {
-	sudo apt-get -y update
+	sudo apt-get -y update&>> /DNIF/error.log
 	echo -e "[-] Setting up docker-ce respositories\n"
 	sudo apt-get -y install \
     apt-transport-https \
     ca-certificates \
     curl \
     gnupg-agent \
-    software-properties-common
-	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-	sudo apt-key fingerprint 0EBFCD88
+    software-properties-common&>> /DNIF/error.log
+	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -&>> /DNIF/error.log
+	sudo apt-key fingerprint 0EBFCD88&>> /DNIF/error.log
 	sudo add-apt-repository \
    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
    $(lsb_release -cs) \
-   stable"
-	sudo apt-get -y update
+   stable"&>> /DNIF/error.log
+	sudo apt-get -y update&>> /DNIF/error.log
 	echo -e "[-] Installing docker-ce\n"
-	sudo apt-get -y install docker-ce docker-ce-cli containerd.io
+	sudo apt-get -y install docker-ce docker-ce-cli containerd.io&>> /DNIF/error.log
 	#echo -n "[-] Finding docker installation "
 	#echo -e " ... \e[1;32m[DONE] \e[0m\n"
 }
@@ -76,7 +76,7 @@ function sysctl_check() {
 	count=$(sysctl -n vm.max_map_count)
 	if [ "$count" = "262144" ]; then
 		echo -e "[-] Fine tuning the operating system\n"
-		ufw -f reset
+		ufw -f reset&>> /DNIF/error.log
 
 	else
 
@@ -88,8 +88,8 @@ function sysctl_check() {
 		net.core.rmem_default=33554432
 		net.core.rmem_max=33554432" >>/etc/sysctl.conf
 
-		sysctl -p
-		ufw -f reset
+		sysctl -p&>> /DNIF/error.log
+		ufw -f reset&>> /DNIF/error.log
 	fi
 
 }
@@ -101,8 +101,8 @@ function sysctl_check() {
 ARCH=$(uname -m)
 VER=$(lsb_release -rs)
 
-
-echo -e "\nDNIF Installer for v9.1beta3\n"
+mkdir -p /DNIF
+echo -e "\nDNIF Installer for v9beta3\n"
 echo -e "for more information and code visit https://github.com/dnif-backyard/installer\n"
 
 echo -e "++ Checking operating system for compatibility...\n"
@@ -110,17 +110,17 @@ echo -e "++ Checking operating system for compatibility...\n"
 echo -n "Operating system compatibility"
 sleep 2
 if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 20.04 by the number of release you want
-	echo -e " ... \e[1;32m[OK] \e[0m\n"
+	echo -e " ... \e[1;32m[OK] \e[0m"
 	echo -n "Architecture compatibility "
 	echo -e " ... \e[1;32m[OK] \e[0m\n"
-	echo -e "** found Ubuntu 20.04 (LTS) x86_64\n\n"
+	echo -e "** found Ubuntu 20.04 (LTS) x86_64\n"
 	echo -e "[-] Checking operating system for compatibility - ... \e[1;32m[DONE] \e[0m\n"
-	echo -e "** Please report issues to https://github.com/dnif-backyard/installer/issues\n"
-	echo -e "* Select a DNIF component you would like to install\n"
-	echo -e "** for more information visit https://docs.dnif.it/v91/docs/high-level-dnif-architecture\n"
-	echo -e "    [1] Core (CO) AND Datanode\n"
-	echo -e "    [2] Console (LC) \n"
-	echo -e "    [3] Datanode (DN) \n"
+	echo -e "** Please report issues to https://github.com/dnif-backyard/installer/issues"
+	echo -e "** for more information visit https://docs.dnif.it/v9/docs/high-level-dnif-architecture\n"
+	echo -e "* Select a DNIF component you would like to install"
+	echo -e "    [1] Core (CO)"
+	echo -e "    [2] Console (LC)"
+	echo -e "    [3] Datanode (DN)"
        	echo -e "    [4] Adapter (AD)\n"
 	read -p "Pick the number corresponding to the component (1 - 4): " COMP
 	echo -e "-----------------------------------------------------------------------------------------"
@@ -138,14 +138,14 @@ if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 20.04 by 
 				echo -e "[-] Found java executable in $JAVA_HOME \n"
 				_java="$JAVA_HOME/bin/java"
 			else
-				default="YES"
+				default="Y"
 				echo -e "[-] To proceed futher you have to  Install openjdk14 before installtion\n"
-				echo "[-] To install OpenJdk14 type YES or NO"
-				read -r var
+				read -p "[-] To install OpenJdk14 type [Y/n] " var
+				#read -r var
 				input=${var:-$default}
 				temp=${input^^}
-				if [ "$temp" == "YES" ]; then
-					apt-get -y install openjdk-14-jdk
+				if [ "$temp" == "Y" ]; then
+					apt-get -y install openjdk-14-jdk&>> /DNIF/error.log
 				else
 					echo "[-] Aborted"
 					exit 0
@@ -258,14 +258,14 @@ services:
 				echo -e "[-] Found java executable in $JAVA_HOME \n"
 				_java="$JAVA_HOME/bin/java"
 			else
-				default="YES"
+				default="Y"
 				echo -e "[-] To proceed futher you have to  Install openjdk14 before installtion\n"
-				echo "[-] To install OpenJdk14 type YES or NO"
-				read -r var
+				read -p "[-] To install OpenJdk14 type [Y/n] " var
+				#read -r var
 				input=${var:-$default}
 				temp=${input^^}
-				if [ "$temp" == "YES" ]; then
-					apt-get -y install openjdk-14-jdk
+				if [ "$temp" == "Y" ]; then
+					apt-get -y install openjdk-14-jdk&>> /DNIF/error.log
 				else
 					echo "[-] Aborted"
 					exit 0
