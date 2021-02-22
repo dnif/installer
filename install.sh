@@ -76,7 +76,7 @@ function sysctl_check() {
 	count=$(sysctl -n vm.max_map_count)
 	if [ "$count" = "262144" ]; then
 		echo -e "[-] Fine tuning the operating system\n"
-		ufw reset
+		ufw -f reset
 
 	else
 
@@ -89,7 +89,7 @@ function sysctl_check() {
 		net.core.rmem_max=33554432" >>/etc/sysctl.conf
 
 		sysctl -p
-		ufw reset
+		ufw -f reset
 	fi
 
 }
