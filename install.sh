@@ -103,7 +103,7 @@ VER=$(lsb_release -rs)
 
 mkdir -p /DNIF
 echo -e "\nDNIF Installer for v9beta3\n"
-echo -e "for more information and code visit https://github.com/dnif-backyard/installer\n"
+echo -e "for more information and code visit https://github.com/dnif/installer\n"
 
 echo -e "++ Checking operating system for compatibility...\n"
 
@@ -115,7 +115,7 @@ if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 20.04 by 
 	echo -e " ... \e[1;32m[OK] \e[0m\n"
 	echo -e "** found Ubuntu 20.04 (LTS) x86_64\n"
 	echo -e "[-] Checking operating system for compatibility - ... \e[1;32m[DONE] \e[0m\n"
-	echo -e "** Please report issues to https://github.com/dnif-backyard/installer/issues"
+	echo -e "** Please report issues to https://github.com/dnif/installer/issues"
 	echo -e "** for more information visit https://docs.dnif.it/v9/docs/high-level-dnif-architecture\n"
 	echo -e "* Select a DNIF component you would like to install"
 	echo -e "    [1] Core (CO)"
