@@ -9,8 +9,8 @@ function compose_check() {
 			echo -n "[-] Finding docker-compose installation - found incompatible version"
 			echo -e "... \e[0;31m[ERROR] \e[0m\n"
 			echo -e "[-] Updating docker-compose\n"
-			sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose &>> /DNIF/error.log
-			sudo chmod +x /usr/local/bin/docker-compose &>> /DNIF/error.log
+			sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose &>> /DNIF/install.log
+			sudo chmod +x /usr/local/bin/docker-compose &>> /DNIF/install.log
 			echo -e "[-] Installing docker-compose - ... \e[1;32m[DONE] \e[0m\n"
 		else
 			echo -e "[-] docker-compose up-to-date\n"
@@ -19,8 +19,8 @@ function compose_check() {
 	else
 		echo -e "[-] Finding docker-compose installation - ... \e[1;31m[NEGATIVE] \e[0m\n"
 		echo -e "[-] Installaing docker-compose\n"
-		sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose &>> /DNIF/error.log
-		sudo chmod +x /usr/local/bin/docker-compose&>> /DNIF/error.log
+		sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose &>> /DNIF/install.log
+		sudo chmod +x /usr/local/bin/docker-compose&>> /DNIF/install.log
         	echo -e "[-] Installing docker-compose - ... \e[1;32m[DONE] \e[0m\n"
 	fi
 
@@ -36,7 +36,7 @@ function docker_check() {
 			echo -n "[-] Finding docker installation - found incompatible version"
 			echo -e "... \e[0;31m[ERROR] \e[0m\n"
 			echo -e "[-] Uninstalling docker\n"
-			sudo apt-get remove docker docker-engine docker.io containerd runc&>> /DNIF/error.log
+			sudo apt-get remove docker docker-engine docker.io containerd runc&>> /DNIF/install.log
 			docker_install
 		else
 			echo -e "[-] docker up-to-date\n"
@@ -51,23 +51,23 @@ function docker_check() {
 }
 
 function docker_install() {
-	sudo apt-get -y update&>> /DNIF/error.log
+	sudo apt-get -y update&>> /DNIF/install.log
 	echo -e "[-] Setting up docker-ce respositories\n"
 	sudo apt-get -y install \
     apt-transport-https \
     ca-certificates \
     curl \
     gnupg-agent \
-    software-properties-common&>> /DNIF/error.log
-	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -&>> /DNIF/error.log
-	sudo apt-key fingerprint 0EBFCD88&>> /DNIF/error.log
+    software-properties-common&>> /DNIF/install.log
+	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -&>> /DNIF/install.log
+	sudo apt-key fingerprint 0EBFCD88&>> /DNIF/install.log
 	sudo add-apt-repository \
    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
    $(lsb_release -cs) \
-   stable"&>> /DNIF/error.log
-	sudo apt-get -y update&>> /DNIF/error.log
+   stable"&>> /DNIF/install.log
+	sudo apt-get -y update&>> /DNIF/install.log
 	echo -e "[-] Installing docker-ce\n"
-	sudo apt-get -y install docker-ce docker-ce-cli containerd.io&>> /DNIF/error.log
+	sudo apt-get -y install docker-ce docker-ce-cli containerd.io&>> /DNIF/install.log
 	#echo -n "[-] Finding docker installation "
 	#echo -e " ... \e[1;32m[DONE] \e[0m\n"
 }
@@ -76,7 +76,7 @@ function sysctl_check() {
 	count=$(sysctl -n vm.max_map_count)
 	if [ "$count" = "262144" ]; then
 		echo -e "[-] Fine tuning the operating system\n"
-		ufw -f reset&>> /DNIF/error.log
+		ufw -f reset&>> /DNIF/install.log
 
 	else
 
@@ -88,8 +88,8 @@ function sysctl_check() {
 		net.core.rmem_default=33554432
 		net.core.rmem_max=33554432" >>/etc/sysctl.conf
 
-		sysctl -p&>> /DNIF/error.log
-		ufw -f reset&>> /DNIF/error.log
+		sysctl -p&>> /DNIF/install.log
+		ufw -f reset&>> /DNIF/install.log
 	fi
 
 }
@@ -145,7 +145,7 @@ if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 20.04 by 
 				input=${var:-$default}
 				temp=${input^^}
 				if [ "$temp" == "Y" ]; then
-					apt-get -y install openjdk-14-jdk&>> /DNIF/error.log
+					apt-get -y install openjdk-14-jdk&>> /DNIF/install.log
 				else
 					echo "[-] Aborted"
 					exit 0
@@ -265,7 +265,7 @@ services:
 				input=${var:-$default}
 				temp=${input^^}
 				if [ "$temp" == "Y" ]; then
-					apt-get -y install openjdk-14-jdk&>> /DNIF/error.log
+					apt-get -y install openjdk-14-jdk&>> /DNIF/install.log
 				else
 					echo "[-] Aborted"
 					exit 0
