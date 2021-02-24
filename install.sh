@@ -4,7 +4,7 @@ set -e
 
 function compose_check() {
 	if [ -x "$(command -v docker-compose)" ]; then
-		version=$(docker-compose --version |cut -c 24-29)
+		version=$(docker-compose --version |cut -d ' ' -f3 | cut -d ',' -f1)
 		if [[ "$version" != "1.23.1" ]]; then
 			echo -n "[-] Finding docker-compose installation - found incompatible version"
 			echo -e "... \e[0;31m[ERROR] \e[0m\n"
@@ -31,7 +31,7 @@ function compose_check() {
 function docker_check() {
 	echo -e "[-] Finding docker installation\n"
 	if [ -x "$(command -v docker)" ]; then
-		version=$(docker --version |cut -c 16-22)
+		version=$(docker --version |cut -d ' ' -f3 | cut -d ',' -f1)
 		if [[ "$version" != "20.10.3" ]]; then
 			echo -n "[-] Finding docker installation - found incompatible version"
 			echo -e "... \e[0;31m[ERROR] \e[0m\n"
