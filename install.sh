@@ -177,9 +177,9 @@ services:
     cap_add:
       - NET_ADMIN
     volumes:
-      - /CO:/dnif
-      - /common:/common
-      - /backup:/backup
+      - /DNIF/CO:/dnif
+      - /DNIF/common:/common
+      - /DNIF/backup:/backup
     environment:
       - "\'CORE_IP="$COREIP"\'"
     ulimits:
@@ -195,12 +195,12 @@ services:
     cap_add:
       - NET_ADMIN
     volumes:
-      - /DL:/dnif
+      - /DNIF/DL:/dnif
       - /run:/run
       - /opt:/opt
       - /etc/systemd/system:/etc/systemd/system
-      - /common:/common
-      - /backup:/backup
+      - /DNIF/common:/common
+      - /DNIF/backup:/backup
     environment:
       - "\'CORE_IP="$COREIP"\'"
     ulimits:
@@ -236,7 +236,7 @@ services:
   cap_add:
    - NET_ADMIN
   volumes:
-   - /dnif/LC:/dnif/lc
+   - /DNIF/LC:/dnif/lc
   container_name: console-v9">/DNIF/LC/docker-compose.yaml
   			cd /DNIF/LC || exit
 			echo -e "[-] Starting container... \n"
@@ -297,12 +297,12 @@ services:
     cap_add:
       - NET_ADMIN
     volumes:
-      - /DL:/dnif
+      - /DNIF/DL:/dnif
       - /run:/run
       - /opt:/opt
       - /etc/systemd/system:/etc/systemd/system
-      - /common:/common
-      - /backup:/backup
+      - /DNIF/common:/common
+      - /DNIF/backup:/backup
     environment:
       - "\'CORE_IP="$COREIP"\'"
     ulimits:
@@ -345,8 +345,8 @@ services:
   environment:
    - "\'CORE_IP="$COREIP"\'"
   volumes:
-   - /AD:/dnif
-   - /backup:/backup
+   - /DNIF/AD:/dnif
+   - /DNIF/backup:/backup
   container_name: adapter-v9">/DNIF/AD/docker-compose.yaml
   			cd /DNIF/AD || exit
 			echo -e "[-] Starting container...\n "
