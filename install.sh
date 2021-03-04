@@ -102,7 +102,7 @@ ARCH=$(uname -m)
 VER=$(lsb_release -rs)
 
 mkdir -p /DNIF
-echo -e "\nDNIF Installer for v9beta3\n"
+echo -e "\nDNIF Installer for v9\n"
 echo -e "for more information and code visit https://github.com/dnif/installer\n"
 
 echo -e "++ Checking operating system for compatibility...\n"
@@ -158,9 +158,9 @@ if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 20.04 by 
 				fi
 			fi
 			echo -e "[-] Pulling docker Image for CORE\n"
-			docker pull dnif/core:v9beta3		# replace tag by the number of release you want
+			docker pull dnif/core:v9.0		# replace tag by the number of release you want
 			echo -e "[-] Pulling docker Image for Datanode\n"
-			docker pull dnif/datanode:v9beta3    	# replace tag by the number of release you want
+			docker pull dnif/datanode:v9.0    	# replace tag by the number of release you want
 			cd /
 			sudo mkdir -p DNIF
 			COREIP=""
@@ -171,7 +171,7 @@ if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 20.04 by 
 			sudo echo -e "version: "\'2.0\'"
 services:
   core:
-    image: dnif/core:v9beta3
+    image: dnif/core:v9.0
     network_mode: "\'host\'"
     restart: unless-stopped
     cap_add:
@@ -189,7 +189,7 @@ services:
     container_name: core-v9
   datanode-master:
     privileged: true
-    image: dnif/datanode:v9beta3
+    image: dnif/datanode:v9.0
     network_mode: "\'host\'"
     restart: unless-stopped
     cap_add:
@@ -223,14 +223,14 @@ services:
 			compose_check
 			sysctl_check
 			echo -e "[-] Pulling docker Image for Console\n"
-			docker pull dnif/console:v9beta3   	# replace tag by the number of release you want
+			docker pull dnif/console:v9.0   	# replace tag by the number of release you want
 			cd /
 			sudo mkdir -p /DNIF
 			sudo mkdir -p /DNIF/LC
 			sudo echo -e "version: "\'2.0\'"
 services:
  console:
-  image: dnif/console:v9beta3
+  image: dnif/console:v9.0
   network_mode: "\'host\'"
   restart: unless-stopped
   cap_add:
@@ -279,7 +279,7 @@ services:
 			fi
 			sleep 5
 			echo -e "[-] Pulling docker Image for Datanode\n"
-			docker pull dnif/datanode:v9beta3		# replace tag by the number of release you want
+			docker pull dnif/datanode:v9.0		# replace tag by the number of release you want
 			COREIP=""
 			while [[ ! $COREIP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; do
 				echo -e "ENTER CORE IP: \c"
@@ -291,7 +291,7 @@ services:
 services:
   datanode:
     privileged: true
-    image: dnif/datanode:v9beta3
+    image: dnif/datanode:v9.0
     network_mode: "\'host\'"
     restart: unless-stopped
     cap_add:
@@ -325,7 +325,7 @@ services:
 			compose_check
 			sysctl_check
 			echo -e "[-] Pulling docker Image for Adapter\n"
-			docker pull dnif/adapter:v9beta3 		# replace tag by the number of release you want
+			docker pull dnif/adapter:v9.0 		# replace tag by the number of release you want
 			COREIP=""
 			while [[ ! $COREIP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; do
 				echo -e "ENTER CORE IP: \c"
@@ -337,7 +337,7 @@ services:
 			sudo echo -e "version: "\'2.0\'"
 services:
  adapter:
-  image: dnif/adapter:v9beta3
+  image: dnif/adapter:v9.0
   network_mode: "\'host\'"
   restart: unless-stopped
   cap_add:
