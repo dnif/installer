@@ -32,7 +32,7 @@ function docker_check() {
 	echo -e "[-] Finding docker installation\n"
 	if [ -x "$(command -v docker)" ]; then
 		version=$(docker --version |cut -d ' ' -f3 | cut -d ',' -f1)
-		if [[ "$version" != "20.10.3" ]]; then
+		if [[ "$version" != "20.10.5" ]]; then
 			echo -n "[-] Finding docker installation - found incompatible version"
 			echo -e "... \e[0;31m[ERROR] \e[0m\n"
 			echo -e "[-] Uninstalling docker\n"
