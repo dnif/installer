@@ -101,6 +101,7 @@ function sysctl_check() {
 ARCH=$(uname -m)
 VER=$(lsb_release -rs)
 tag="v9.0" 		# replace tag by the number of release you want
+release=$(lsb_release -d | cut -d ':' -f2| xargs)
 mkdir -p /DNIF
 echo -e "\nDNIF Installer for v9.0\n"
 echo -e "for more information and code visit https://github.com/dnif/installer\n"
@@ -113,7 +114,8 @@ if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 20.04 by 
 	echo -e " ... \e[1;32m[OK] \e[0m"
 	echo -n "Architecture compatibility "
 	echo -e " ... \e[1;32m[OK] \e[0m\n"
-	echo -e "** found Ubuntu 20.04 (LTS) x86_64\n"
+	#echo -e "** found  Ubuntu 20.04 (LTS) x86_64\n"
+	echo -e "** found  $release $ARCH\n"
 	echo -e "[-] Checking operating system for compatibility - ... \e[1;32m[DONE] \e[0m\n"
 	echo -e "** Please report issues to https://github.com/dnif/installer/issues"
 	echo -e "** for more information visit https://docs.dnif.it/v9/docs/high-level-dnif-architecture\n"
@@ -157,7 +159,7 @@ if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 20.04 by 
 					echo -e "[-] OpenJdk $version version is running\n"
 				fi
 			fi
-			echo -e "[-] Pulling docker Image for CORE\n"
+			echo -e "\n[-] Pulling docker Image for CORE\n"
 			docker pull dnif/core:$tag		
 			echo -e "[-] Pulling docker Image for Datanode\n"
 			docker pull dnif/datanode:$tag    	
@@ -278,7 +280,7 @@ services:
 				fi
 			fi
 			sleep 5
-			echo -e "[-] Pulling docker Image for Datanode\n"
+			echo -e "\n[-] Pulling docker Image for Datanode\n"
 			docker pull dnif/datanode:$tag		
 			COREIP=""
 			while [[ ! $COREIP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; do
@@ -311,12 +313,13 @@ services:
         hard: -1
     container_name: datanode-v9">>/DNIF/DL/docker-compose.yaml
     			cd /DNIF/DL || exit
+			IP=$(ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/')
 			echo -e "[-] Starting container... \n"
 			docker-compose up -d
 			echo -e "[-] Starting container ... \e[1;32m[DONE] \e[0m"
 			docker ps
 			echo -e "** Congratulations you have successfully installed the Datanode\n"
-			echo -e "**   Active the Datanode (10.2.1.4) from the components page\n"
+			echo -e "**   Activate the Datanode ($IP) from the components page\n"
 			;;
 		4)
 			echo -e "[-] Installing the ADAPTER \n"
@@ -349,12 +352,13 @@ services:
    - /DNIF/backup:/backup
   container_name: adapter-v9">/DNIF/AD/docker-compose.yaml
   			cd /DNIF/AD || exit
+			IP=$(ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/')
 			echo -e "[-] Starting container...\n "
 			docker-compose up -d
 			echo -e "[-] Starting container ... \e[1;32m[DONE] \e[0m\n"
 			docker ps
 			echo -e "** Congratulations you have successfully installed the Adapter\n"
-			echo -e "**   Active the Adapter (10.2.1.4) from the components page\n"
+			echo -e "**   Activate the Adapter ($IP) from the components page\n"
 			;;
 		esac
 
