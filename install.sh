@@ -115,7 +115,7 @@ if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 20.04 by 
 	echo -n "Architecture compatibility "
 	echo -e " ... \e[1;32m[OK] \e[0m\n"
 	#echo -e "** found  Ubuntu 20.04 (LTS) x86_64\n"
-	echo -e "** found  $release $ARCH\n"
+	echo -e "** found $release $ARCH\n"
 	echo -e "[-] Checking operating system for compatibility - ... \e[1;32m[DONE] \e[0m\n"
 	echo -e "** Please report issues to https://github.com/dnif/installer/issues"
 	echo -e "** for more information visit https://docs.dnif.it/v9/docs/high-level-dnif-architecture\n"
