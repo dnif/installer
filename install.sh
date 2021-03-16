@@ -31,23 +31,25 @@ function compose_check() {
 function docker_check() {
 	echo -e "[-] Finding docker installation\n"
 	if [ -x "$(command -v docker)" ]; then
-		version=$(docker --version |cut -d ' ' -f3 | cut -d ',' -f1)
-		if [[ "$version" != "20.10.5" ]]; then
-			echo -n "[-] Finding docker installation - found incompatible version"
-			echo -e "... \e[0;31m[ERROR] \e[0m\n"
-			echo -e "[-] Uninstalling docker\n"
-			sudo apt-get remove docker docker-engine docker.io containerd runc&>> /DNIF/install.log
-			docker_install
-		else
-			echo -e "[-] docker up-to-date\n"
-			echo -e "[-] Finding docker installation ... \e[1;32m[DONE] \e[0m\n"
-		fi
+		currentver="$(docker --version |cut -d ' ' -f3 | cut -d ',' -f1)"
+        	requiredver="20.10.3"
+        	if [ "$(printf '%s\n' "$requiredver" "$currentver" | sort -V | head -n1)" = "$requiredver" ]; then
+                	echo -e "[-] docker up-to-date\n"
+                	echo -e "[-] Finding docker installation ... \e[1;32m[DONE] \e[0m\n"
+        	else
+                	echo -n "[-] Finding docker installation - found incompatible version"
+                	echo -e "... \e[0;31m[ERROR] \e[0m\n"
+                	echo -e "[-] Uninstalling docker\n"
+                	sudo apt-get remove docker docker-engine docker.io containerd runc&>> /DNIF/install.log
+                	docker_install
+        	fi
 	else
-		echo -e "[-] Finding docker installation - ... \e[1;31m[NEGATIVE] \e[0m\n"
-		echo -e "[-] Installing docker\n"
-		docker_install
-		echo -e "[-] Finding docker installation - ... \e[1;32m[DONE] \e[0m\n"
+        	echo -e "[-] Finding docker installation - ... \e[1;31m[NEGATIVE] \e[0m\n"
+        	echo -e "[-] Installing docker\n"
+        	docker_install
+        	echo -e "[-] Finding docker installation - ... \e[1;32m[DONE] \e[0m\n"
 	fi
+
 }
 
 function docker_install() {
@@ -68,8 +70,6 @@ function docker_install() {
 	sudo apt-get -y update&>> /DNIF/install.log
 	echo -e "[-] Installing docker-ce\n"
 	sudo apt-get -y install docker-ce docker-ce-cli containerd.io&>> /DNIF/install.log
-	#echo -n "[-] Finding docker installation "
-	#echo -e " ... \e[1;32m[DONE] \e[0m\n"
 }
 
 function sysctl_check() {
@@ -98,10 +98,11 @@ function sysctl_check() {
 
 
 
+
 ARCH=$(uname -m)
 VER=$(lsb_release -rs)
 tag="v9.0" 		# replace tag by the number of release you want
-release=$(lsb_release -d | cut -d ':' -f2| xargs)
+release=$(lsb_release -ds)
 mkdir -p /DNIF
 echo -e "\nDNIF Installer for v9.0\n"
 echo -e "for more information and code visit https://github.com/dnif/installer\n"
