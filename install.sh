@@ -161,15 +161,20 @@ if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 20.04 by 
 				fi
 			fi
 			echo -e "\n[-] Pulling docker Image for CORE\n"
-			docker pull dnif/core:$tag		
+			#docker pull dnif/core:$tag		
 			echo -e "[-] Pulling docker Image for Datanode\n"
-			docker pull dnif/datanode:$tag    	
+			#docker pull dnif/datanode:$tag    	
 			cd /
 			sudo mkdir -p DNIF
 			COREIP=""
 			while [[ ! $COREIP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; do
 				echo -e "ENTER CORE IP: \c"
 				read -r COREIP
+			done
+			ProxyUrl=""
+			while [[ ! "$ProxyUrl" ]]; do
+				echo -e "ENTER Proxy url: \c"
+				read -r ProxyUrl
 			done
 			sudo echo -e "version: "\'2.0\'"
 services:
@@ -185,6 +190,7 @@ services:
       - /DNIF/backup:/backup
     environment:
       - "\'CORE_IP="$COREIP"\'"
+      - "\'proxy="$ProxyUrl"\'"
     ulimits:
       memlock:
         soft: -1
@@ -213,7 +219,7 @@ services:
     container_name: datanode-master-v9">>/DNIF/docker-compose.yaml
 			cd /DNIF || exit
 			echo -e "[-] Starting container... \n"
-			docker-compose up -d
+			#docker-compose up -d
 			echo -e "[-] Starting container... \e[1;32m[DONE] \e[0m\n"
 			docker ps
 			echo -e "** Congratulations you have successfully installed the CORE \n"
