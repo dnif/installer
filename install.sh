@@ -187,7 +187,7 @@ services:
     volumes:
       - /DNIF/CO:/dnif
       - /DNIF/common:/common
-      - /DNIF/backup:/backup
+      - /DNIF/backup/core:/backup
     environment:
       - "\'CORE_IP="$COREIP"\'"
     ulimits:
@@ -208,7 +208,7 @@ services:
       - /opt:/opt
       - /etc/systemd/system:/etc/systemd/system
       - /DNIF/common:/common
-      - /DNIF/backup:/backup
+      - /DNIF/backup/dn:/backup
     environment:
       - "\'CORE_IP="$COREIP"\'"
     ulimits:
@@ -355,7 +355,7 @@ services:
    - "\'CORE_IP="$COREIP"\'"
   volumes:
    - /DNIF/AD:/dnif
-   - /DNIF/backup:/backup
+   - /DNIF/backup/ad:/backup
   container_name: adapter-v9">/DNIF/AD/docker-compose.yaml
   			cd /DNIF/AD || exit
 			IP=$(ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/')
