@@ -171,11 +171,11 @@ if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 20.04 by 
 				echo -e "ENTER CORE IP: \c"
 				read -r COREIP
 			done
-			ProxyUrl=""
-			while [[ ! "$ProxyUrl" ]]; do
-				echo -e "ENTER Proxy url: \c"
-				read -r ProxyUrl
-			done
+			#ProxyUrl=""
+			#while [[ ! "$ProxyUrl" ]]; do
+			#	echo -e "ENTER Proxy url: \c"
+			#	read -r ProxyUrl
+			#done
 			sudo echo -e "version: "\'2.0\'"
 services:
   core:
@@ -190,7 +190,6 @@ services:
       - /DNIF/backup:/backup
     environment:
       - "\'CORE_IP="$COREIP"\'"
-      - "\'proxy="$ProxyUrl"\'"
     ulimits:
       memlock:
         soft: -1
