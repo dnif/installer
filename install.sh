@@ -31,23 +31,25 @@ function compose_check() {
 function docker_check() {
 	echo -e "[-] Finding docker installation\n"
 	if [ -x "$(command -v docker)" ]; then
-		version=$(docker --version |cut -d ' ' -f3 | cut -d ',' -f1)
-		if [[ "$version" != "20.10.3" ]]; then
-			echo -n "[-] Finding docker installation - found incompatible version"
-			echo -e "... \e[0;31m[ERROR] \e[0m\n"
-			echo -e "[-] Uninstalling docker\n"
-			sudo apt-get remove docker docker-engine docker.io containerd runc&>> /DNIF/install.log
-			docker_install
-		else
-			echo -e "[-] docker up-to-date\n"
-			echo -e "[-] Finding docker installation ... \e[1;32m[DONE] \e[0m\n"
-		fi
+		currentver="$(docker --version |cut -d ' ' -f3 | cut -d ',' -f1)"
+        	requiredver="20.10.3"
+        	if [ "$(printf '%s\n' "$requiredver" "$currentver" | sort -V | head -n1)" = "$requiredver" ]; then
+                	echo -e "[-] docker up-to-date\n"
+                	echo -e "[-] Finding docker installation ... \e[1;32m[DONE] \e[0m\n"
+        	else
+                	echo -n "[-] Finding docker installation - found incompatible version"
+                	echo -e "... \e[0;31m[ERROR] \e[0m\n"
+                	echo -e "[-] Uninstalling docker\n"
+                	sudo apt-get remove docker docker-engine docker.io containerd runc&>> /DNIF/install.log
+                	docker_install
+        	fi
 	else
-		echo -e "[-] Finding docker installation - ... \e[1;31m[NEGATIVE] \e[0m\n"
-		echo -e "[-] Installing docker\n"
-		docker_install
-		echo -e "[-] Finding docker installation - ... \e[1;32m[DONE] \e[0m\n"
+        	echo -e "[-] Finding docker installation - ... \e[1;31m[NEGATIVE] \e[0m\n"
+        	echo -e "[-] Installing docker\n"
+        	docker_install
+        	echo -e "[-] Finding docker installation - ... \e[1;32m[DONE] \e[0m\n"
 	fi
+
 }
 
 function docker_install() {
@@ -68,8 +70,6 @@ function docker_install() {
 	sudo apt-get -y update&>> /DNIF/install.log
 	echo -e "[-] Installing docker-ce\n"
 	sudo apt-get -y install docker-ce docker-ce-cli containerd.io&>> /DNIF/install.log
-	#echo -n "[-] Finding docker installation "
-	#echo -e " ... \e[1;32m[DONE] \e[0m\n"
 }
 
 function sysctl_check() {
@@ -98,11 +98,13 @@ function sysctl_check() {
 
 
 
+
 ARCH=$(uname -m)
 VER=$(lsb_release -rs)
-
+tag="v9.0" 		# replace tag by the number of release you want
+release=$(lsb_release -ds)
 mkdir -p /DNIF
-echo -e "\nDNIF Installer for v9beta3\n"
+echo -e "\nDNIF Installer for v9.0\n"
 echo -e "for more information and code visit https://github.com/dnif/installer\n"
 
 echo -e "++ Checking operating system for compatibility...\n"
@@ -113,7 +115,8 @@ if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 20.04 by 
 	echo -e " ... \e[1;32m[OK] \e[0m"
 	echo -n "Architecture compatibility "
 	echo -e " ... \e[1;32m[OK] \e[0m\n"
-	echo -e "** found Ubuntu 20.04 (LTS) x86_64\n"
+	#echo -e "** found  Ubuntu 20.04 (LTS) x86_64\n"
+	echo -e "** found $release $ARCH\n"
 	echo -e "[-] Checking operating system for compatibility - ... \e[1;32m[DONE] \e[0m\n"
 	echo -e "** Please report issues to https://github.com/dnif/installer/issues"
 	echo -e "** for more information visit https://docs.dnif.it/v9/docs/high-level-dnif-architecture\n"
@@ -157,10 +160,10 @@ if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 20.04 by 
 					echo -e "[-] OpenJdk $version version is running\n"
 				fi
 			fi
-			echo -e "[-] Pulling docker Image for CORE\n"
-			docker pull dnif/core:v9beta3		# replace tag by the number of release you want
+			echo -e "\n[-] Pulling docker Image for CORE\n"
+			docker pull dnif/core:$tag		
 			echo -e "[-] Pulling docker Image for Datanode\n"
-			docker pull dnif/datanode:v9beta3    	# replace tag by the number of release you want
+			docker pull dnif/datanode:$tag    	
 			cd /
 			sudo mkdir -p DNIF
 			COREIP=""
@@ -168,10 +171,15 @@ if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 20.04 by 
 				echo -e "ENTER CORE IP: \c"
 				read -r COREIP
 			done
+			#ProxyUrl=""
+			#while [[ ! "$ProxyUrl" ]]; do
+			#	echo -e "ENTER Proxy url: \c"
+			#	read -r ProxyUrl
+			#done
 			sudo echo -e "version: "\'2.0\'"
 services:
   core:
-    image: dnif/core:v9beta3
+    image: dnif/core:$tag
     network_mode: "\'host\'"
     restart: unless-stopped
     cap_add:
@@ -179,7 +187,7 @@ services:
     volumes:
       - /DNIF/CO:/dnif
       - /DNIF/common:/common
-      - /DNIF/backup:/backup
+      - /DNIF/backup/core:/backup
     environment:
       - "\'CORE_IP="$COREIP"\'"
     ulimits:
@@ -189,7 +197,7 @@ services:
     container_name: core-v9
   datanode-master:
     privileged: true
-    image: dnif/datanode:v9beta3
+    image: dnif/datanode:$tag
     network_mode: "\'host\'"
     restart: unless-stopped
     cap_add:
@@ -200,7 +208,7 @@ services:
       - /opt:/opt
       - /etc/systemd/system:/etc/systemd/system
       - /DNIF/common:/common
-      - /DNIF/backup:/backup
+      - /DNIF/backup/dn:/backup
     environment:
       - "\'CORE_IP="$COREIP"\'"
     ulimits:
@@ -223,14 +231,14 @@ services:
 			compose_check
 			sysctl_check
 			echo -e "[-] Pulling docker Image for Console\n"
-			docker pull dnif/console:v9beta3   	# replace tag by the number of release you want
+			docker pull dnif/console:$tag   	
 			cd /
 			sudo mkdir -p /DNIF
 			sudo mkdir -p /DNIF/LC
 			sudo echo -e "version: "\'2.0\'"
 services:
  console:
-  image: dnif/console:v9beta3
+  image: dnif/console:$tag
   network_mode: "\'host\'"
   restart: unless-stopped
   cap_add:
@@ -278,8 +286,8 @@ services:
 				fi
 			fi
 			sleep 5
-			echo -e "[-] Pulling docker Image for Datanode\n"
-			docker pull dnif/datanode:v9beta3		# replace tag by the number of release you want
+			echo -e "\n[-] Pulling docker Image for Datanode\n"
+			docker pull dnif/datanode:$tag		
 			COREIP=""
 			while [[ ! $COREIP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; do
 				echo -e "ENTER CORE IP: \c"
@@ -291,7 +299,7 @@ services:
 services:
   datanode:
     privileged: true
-    image: dnif/datanode:v9beta3
+    image: dnif/datanode:$tag
     network_mode: "\'host\'"
     restart: unless-stopped
     cap_add:
@@ -311,12 +319,13 @@ services:
         hard: -1
     container_name: datanode-v9">>/DNIF/DL/docker-compose.yaml
     			cd /DNIF/DL || exit
+			IP=$(ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/')
 			echo -e "[-] Starting container... \n"
 			docker-compose up -d
 			echo -e "[-] Starting container ... \e[1;32m[DONE] \e[0m"
 			docker ps
 			echo -e "** Congratulations you have successfully installed the Datanode\n"
-			echo -e "**   Active the Datanode (10.2.1.4) from the components page\n"
+			echo -e "**   Activate the Datanode ($IP) from the components page\n"
 			;;
 		4)
 			echo -e "[-] Installing the ADAPTER \n"
@@ -325,7 +334,7 @@ services:
 			compose_check
 			sysctl_check
 			echo -e "[-] Pulling docker Image for Adapter\n"
-			docker pull dnif/adapter:v9beta3 		# replace tag by the number of release you want
+			docker pull dnif/adapter:$tag 		
 			COREIP=""
 			while [[ ! $COREIP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; do
 				echo -e "ENTER CORE IP: \c"
@@ -337,7 +346,7 @@ services:
 			sudo echo -e "version: "\'2.0\'"
 services:
  adapter:
-  image: dnif/adapter:v9beta3
+  image: dnif/adapter:$tag
   network_mode: "\'host\'"
   restart: unless-stopped
   cap_add:
@@ -346,15 +355,16 @@ services:
    - "\'CORE_IP="$COREIP"\'"
   volumes:
    - /DNIF/AD:/dnif
-   - /DNIF/backup:/backup
+   - /DNIF/backup/ad:/backup
   container_name: adapter-v9">/DNIF/AD/docker-compose.yaml
   			cd /DNIF/AD || exit
+			IP=$(ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/')
 			echo -e "[-] Starting container...\n "
 			docker-compose up -d
 			echo -e "[-] Starting container ... \e[1;32m[DONE] \e[0m\n"
 			docker ps
 			echo -e "** Congratulations you have successfully installed the Adapter\n"
-			echo -e "**   Active the Adapter (10.2.1.4) from the components page\n"
+			echo -e "**   Activate the Adapter ($IP) from the components page\n"
 			;;
 		esac
 
