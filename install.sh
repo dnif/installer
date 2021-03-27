@@ -101,10 +101,10 @@ function sysctl_check() {
 
 ARCH=$(uname -m)
 VER=$(lsb_release -rs)
-tag="v9.0" 		# replace tag by the number of release you want
+tag="v9.0.1" 		# replace tag by the number of release you want
 release=$(lsb_release -ds)
 mkdir -p /DNIF
-echo -e "\nDNIF Installer for v9.0\n"
+echo -e "\nDNIF Installer for v9.0.1\n"
 echo -e "for more information and code visit https://github.com/dnif/installer\n"
 
 echo -e "++ Checking operating system for compatibility...\n"
