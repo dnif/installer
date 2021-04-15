@@ -67,7 +67,7 @@ else
 				required_tag="v9.0.2"
 				upgrade_docker_container $i $current_tag $required_tag
 			else
-				#echo -e "up-to-date ${required}\n"
+				echo -e "up-to-date ${required}\n"
 			fi
 		fi
 	done
