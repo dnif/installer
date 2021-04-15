@@ -66,8 +66,6 @@ else
 			elif [ "$current_tag" == "v9.0.1" ]; then
 				required_tag="v9.0.2"
 				upgrade_docker_container $i $current_tag $required_tag
-			else
-				#echo -e "up-to-date ${required}\n"
 			fi
 		fi
 	done
