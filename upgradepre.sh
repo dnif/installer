@@ -7,7 +7,7 @@ upgrade_docker_container () {
 	echo "$1"
 	if [[ "$1" == "core-v9" ]]; then
                 cd /DNIF
-		if [[ "$3" == "v9.0" ]]; then
+		if [[ "$2" == "v9.0" ]]; then
 			curl -s "https://raw.githubusercontent.com/dnif/installer/9.0.1/license_path_change">license_path_change
 			chmod +x license_path_change
 			./license_path_change
