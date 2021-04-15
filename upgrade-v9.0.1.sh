@@ -60,6 +60,7 @@ else
 			
 			echo -e "[-] Fetching Tags from docker hub"
 			required_tag="$(wget -q https://registry.hub.docker.com/v1/repositories/dnif/"$image"/tags -O - | tr -d '[]" ' | tr '}' '\n' | awk -F: '{print $3}'|sort -V )"
+			echo -e "$required_tag"
 			echo -e "Enter version name from above list"
 			read required
 			
