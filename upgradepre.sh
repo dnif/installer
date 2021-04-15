@@ -64,10 +64,10 @@ else
 			echo -e "[-] Fetching Tags from docker hub\n"
 			required_tag="$(wget -q https://registry.hub.docker.com/v1/repositories/"$image"/tags -O - | tr -d '[]" ' | tr '}' '\n' | awk -F: '{print $3}'|sort -V|awk 'END{print}')"
 			
-			if ["$current_tag" == "v9.0"]; then
+			if [ "$current_tag" == "v9.0" ]; then
 				required_tag="v9.0.1"
 				upgrade_docker_container $i $current_tag $required_tag
-			elif ["$current_tag" == "v9.0.1" ]; then
+			elif [ "$current_tag" == "v9.0.1" ]; then
 				required_tag="v9.0.2"
 				upgrade_docker_container $i $current_tag $required_tag
 
