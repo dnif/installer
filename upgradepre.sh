@@ -7,12 +7,16 @@ upgrade_docker_container () {
 	echo "$1"
 	if [[ "$1" == "core-v9" ]]; then
                 cd /DNIF
-		curl -s "https://raw.githubusercontent.com/dnif/installer/9.0.1/license_path_change">license_path_change
-		chmod +x license_path_change
-		./license_path_change
-                docker-compose down
-                #sed -i s/"$2"/"$3"/g /DNIF/docker-compose.yaml
-                docker ps
+		if [[ "$3" == "v9.0" ]]; then
+			curl -s "https://raw.githubusercontent.com/dnif/installer/9.0.1/license_path_change">license_path_change
+			chmod +x license_path_change
+			./license_path_change
+			docker-compose down
+		else
+			docker-compose down
+		fi
+
+			docker ps
 	elif [[ "$1" == "console-v9" ]]; then
                 cd /DNIF/LC
                 docker-compose down

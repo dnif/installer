@@ -59,14 +59,16 @@ else
 			image="$(docker images|grep $i|awk 'NR==1 {print $1; exit}'|cut -d "/" -f2)"
 			
 			echo -e "[-] Fetching Tags from docker hub"
-			required_tag="$(wget -q https://registry.hub.docker.com/v1/repositories/dnif/"$image"/tags -O - | tr -d '[]" ' | tr '}' '\n' | awk -F: '{print $3}'|sort -V|awk 'END{print}' )"
+			required_tag="$(wget -q https://registry.hub.docker.com/v1/repositories/dnif/"$image"/tags -O - | tr -d '[]" ' | tr '}' '\n' | awk -F: '{print $3}'|sort -V )"
+			echo -e "Enter version name from above list"
+			read required
 			
 
-			if [ "$(printf '%s\n' "$required_tag" "$current_tag" | sort -V | head -n1)" != "$required_tag" ]; then
+			if [ "$(printf '%s\n' "$required" "$current_tag" | sort -V | head -n1)" != "$required" ]; then
 			
-				upgrade_docker_container $i $current_tag $required_tag
+				upgrade_docker_container $i $current_tag $required
 			else
-				echo -e "up-to-date ${required_tag}\n"
+				echo -e "up-to-date ${required}\n"
 			fi
 		fi
 	done
