@@ -44,7 +44,7 @@ if [[ $EUID -ne 0 ]]; then
     echo -e "This script must be run as root ... \e[1;31m[ERROR] \e[0m\n"
     exit 1
 else
-	container_list=("core" "datanode" "adapter" "console" )
+	container_list=("core" "console" "adapter" "datanode" )
 	echo -e "[-] Finding docker Image"
 	for i in "${container_list[@]}"
 	do
