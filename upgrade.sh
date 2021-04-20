@@ -44,7 +44,7 @@ if [[ $EUID -ne 0 ]]; then
     echo -e "This script must be run as root ... \e[1;31m[ERROR] \e[0m\n"
     exit 1
 else
-	container_list=("core" "datanode" "adapter" "console" )
+	container_list=("core" "console" "adapter" "datanode" )
 	echo -e "[-] Finding docker Image"
 	for i in "${container_list[@]}"
 	do
@@ -59,20 +59,20 @@ else
 			image="$(docker images|grep $i|awk 'NR==1 {print $1; exit}'|cut -d "/" -f2)"
 			
 			echo -e "[-] Fetching Tags from docker hub"
-			required_tag="$(wget -q https://registry.hub.docker.com/v1/repositories/dnif/"$image"/tags -O - | tr -d '[]" ' | tr '}' '\n' | awk -F: '{print $3}'|sort -V )"
-			echo -e "$required_tag"
-			echo -e "Enter version name from above list"
-			read required
-			
-
-			if [ "$(printf '%s\n' "$required" "$current_tag" | sort -V | head -n1)" != "$required" ]; then
-			
-				upgrade_docker_container $i $current_tag $required
+			#required_tag="$(wget -q https://registry.hub.docker.com/v1/repositories/dnif/"$image"/tags -O - | tr -d '[]" ' | tr '}' '\n' | awk -F: '{print $3}'|sort -V )"
+			if [ "$current_tag" == "v9.0" ]; then
+				required_tag="v9.0.1"
+				upgrade_docker_container $i $current_tag $required_tag
+			elif [ "$current_tag" == "v9.0.1" ]; then
+				required_tag="v9.0.2"
+				upgrade_docker_container $i $current_tag $required_tag
+			elif [ "$current_tag" == "v9.0.2" ]; then
+                                required_tag="v9.0.3"
+                                upgrade_docker_container $i $current_tag $required_tag
 			else
 				echo -e "up-to-date ${required}\n"
 			fi
 		fi
 	done
 fi
-
 

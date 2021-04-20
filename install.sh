@@ -119,7 +119,7 @@ else
 
 	ARCH=$(uname -m)
 	VER=$(lsb_release -rs)
-	tag="v9.0.1" 		# replace tag by the number of release you want
+	tag="v9.0.3" 		# replace tag by the number of release you want
 	release=$(lsb_release -ds)
 	mkdir -p /DNIF
 	echo -e "\nDNIF Installer for $tag\n"
