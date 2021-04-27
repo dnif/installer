@@ -21,10 +21,13 @@ upgrade_docker_container () {
 		docker ps
 	elif [[ "$1" == "datanode" ]]; then
                 cd /DNIF/DL
-		echo -e "\n[-] Pulling docker Image for $1\n"
-                sed -i s/"$2"/"$3"/g /DNIF/DL/docker-compose.yaml
-                docker-compose up -d
-		docker ps
+		file="/DNIF/DL/docker-compose.yaml"
+		if [ -f "$file" ]; then
+			echo -e "\n[-] Pulling docker Image for $1\n"
+                	sed -i s/"$2"/"$3"/g /DNIF/DL/docker-compose.yaml
+                	docker-compose up -d
+			docker ps
+		fi
 	elif [[ "$1" == "adapter" ]]; then
                 cd /DNIF/AD
 		echo -e "\n[-] Pulling docker Image for $1\n"
