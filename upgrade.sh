@@ -8,6 +8,12 @@ upgrade_docker_container () {
 	if [[ "$1" == "core" ]]; then
                 cd /DNIF
 		rm -r /DNIF/common
+		if [[ "$3" == "v9.0.3" ]]; then
+			file="/DNIF/CO/redis/data/dump.rdb"
+			if [ -f "$file" ]; then
+				mv /DNIF/CO/redis/data/dump.rdb /DNIF/CO/redis/data/dump.rdb_backup
+			fi
+		fi
 		echo -e "\n[-] Pulling docker Image for $1\n"
                 #docker-compose down
                 sed -i s/"$2"/"$3"/g /DNIF/docker-compose.yaml
@@ -21,10 +27,13 @@ upgrade_docker_container () {
 		docker ps
 	elif [[ "$1" == "datanode" ]]; then
                 cd /DNIF/DL
-		echo -e "\n[-] Pulling docker Image for $1\n"
-                sed -i s/"$2"/"$3"/g /DNIF/DL/docker-compose.yaml
-                docker-compose up -d
-		docker ps
+		file="/DNIF/DL/docker-compose.yaml"
+		if [ -f "$file" ]; then
+			echo -e "\n[-] Pulling docker Image for $1\n"
+                	sed -i s/"$2"/"$3"/g /DNIF/DL/docker-compose.yaml
+                	docker-compose up -d
+			docker ps
+		fi
 	elif [[ "$1" == "adapter" ]]; then
                 cd /DNIF/AD
 		echo -e "\n[-] Pulling docker Image for $1\n"
@@ -64,12 +73,14 @@ else
 				required_tag="v9.0.1"
 				upgrade_docker_container $i $current_tag $required_tag
 			elif [ "$current_tag" == "v9.0.1" ]; then
-				required_tag="v9.0.2"
+				required_tag="v9.0.3"
 				upgrade_docker_container $i $current_tag $required_tag
+			elif [ "$current_tag" == "v9.0.2" ]; then
+                                required_tag="v9.0.3"
+                                upgrade_docker_container $i $current_tag $required_tag
 			else
 				echo -e "up-to-date ${required}\n"
 			fi
 		fi
 	done
 fi
-
