@@ -145,7 +145,7 @@ else
 		COMP=""
 		while [[ ! $COMP =~ ^[1-4] ]]; do
 			echo -e "Pick the number corresponding to the component (1 - 4):  \c"
-					read -r COMP
+			read -r COMP
 			done
 		echo -e "-----------------------------------------------------------------------------------------"
 		case "${COMP^^}" in
