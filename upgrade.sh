@@ -18,6 +18,19 @@ upgrade_docker_container () {
                 #docker-compose down
                 sed -i s/"$2"/"$3"/g /DNIF/docker-compose.yaml
                 docker-compose up -d
+		docker-compose logs -f| while read LREAD
+		do
+			if [[  `echo $LREAD | grep -o "Server is now running"` ]]; then
+				((i=i+1))
+				echo -e "\nBooting up container"
+				if [[ "$i" == "2" ]]; then
+					id="$(pidof docker-compose)"
+					kill -9 $id
+					exit 0
+				fi
+			fi
+		done
+
 		docker ps
 	elif [[ "$1" == "console" ]]; then
                 cd /DNIF/LC
@@ -76,7 +89,7 @@ else
 				required_tag="v9.0.3"
 				upgrade_docker_container $i $current_tag $required_tag
 			elif [ "$current_tag" == "v9.0.2" ]; then
-                                required_tag="v9.0.3"
+                                required_tag="v9.0.4"
                                 upgrade_docker_container $i $current_tag $required_tag
 			else
 				echo -e "up-to-date ${required}\n"
