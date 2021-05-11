@@ -532,7 +532,7 @@ else
 	VER=$(cat /etc/redhat-release | sed s/.*release\ // | sed s/\ .*//)
 	#VER=$(lsb_release -rs)
 	#tag="v9.0.3" 		# replace tag by the number of release you want
-	release="$(. /etc/os-release && echo "$ID")"
+	release="$(. /etc/os-release && echo "$PRETTY_NAME")"
 
 	mkdir -p /DNIF
 	echo -e "\nDNIF Installer for $tag\n"
