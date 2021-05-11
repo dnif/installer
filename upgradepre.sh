@@ -68,10 +68,13 @@ else
 				required_tag="v9.0.1"
 				upgrade_docker_container $i $current_tag $required_tag
 			elif [ "$current_tag" == "v9.0.1" ]; then
-				required_tag="v9.0.2"
+				required_tag="v9.0.3"
 				upgrade_docker_container $i $current_tag $required_tag
 			elif [ "$current_tag" == "v9.0.2" ]; then
-                                required_tag="v9.0.3"
+                                required_tag="v9.0.4"
+                                upgrade_docker_container $i $current_tag $required_tag
+			elif [ "$current_tag" == "v9.0.3" ]; then
+                                required_tag="v9.0.4"
                                 upgrade_docker_container $i $current_tag $required_tag
 
 			else
