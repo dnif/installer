@@ -118,8 +118,8 @@ function podman_compose_check() {
 			echo -n "[-] Finding podman-compose installation - found incompatible version"
 			echo -e "... \e[0;31m[ERROR] \e[0m\n"
 			echo -e "[-] Updating podman-compose\n"
-			pip3 install https://github.com/containers/podman-compose/archive/devel.tar.gz
-			sudo ln -s /usr/local/bin/podman-compose /usr/bin/podman-compose
+			pip3 install https://github.com/containers/podman-compose/archive/devel.tar.gz&>> /DNIF/install.log
+			sudo ln -s /usr/local/bin/podman-compose /usr/bin/podman-compose&>> /DNIF/install.log
 			echo -e "[-] Installing podman-compose - ... \e[1;32m[DONE] \e[0m\n"
 		else
 			echo -e "[-] podman-compose up-to-date\n"
@@ -128,8 +128,8 @@ function podman_compose_check() {
 	else
 		echo -e "[-] Finding podman-compose installation - ... \e[1;31m[NEGATIVE] \e[0m\n"
 		echo -e "[-] Installing podman-compose\n"
-		pip3 install https://github.com/containers/podman-compose/archive/devel.tar.gz
-		sudo ln -s /usr/local/bin/podman-compose /usr/bin/podman-compose
+		pip3 install https://github.com/containers/podman-compose/archive/devel.tar.gz&>> /DNIF/install.log
+		sudo ln -s /usr/local/bin/podman-compose /usr/bin/podman-compose&>> /DNIF/install.log
         	echo -e "[-] Installing podman-compose - ... \e[1;32m[DONE] \e[0m\n"
 	fi
 
@@ -164,7 +164,7 @@ function podman_check() {
 }
 
 function podman_install() {
-	sudo dnf install -y @container-tools
+	sudo dnf install -y @container-tools&>> /DNIF/install.log
 
 }
 
@@ -529,9 +529,7 @@ fi
 else
 
 	ARCH=$(uname -m)
-	echo -e "$ARCH"
 	VER=$(cat /etc/redhat-release | sed s/.*release\ // | sed s/\ .*//)
-	echo -e "$VER"
 	#VER=$(lsb_release -rs)
 	#tag="v9.0.3" 		# replace tag by the number of release you want
 	#release=$(lsb_release -ds)
@@ -568,7 +566,7 @@ else
 				podman_check
 				podman_compose_check
 				sysctl_check
-				setenforce 0
+				setenforce 0&>> /DNIF/install.log
 
 
 				echo -e "[-] Checking for JDK \n"
@@ -588,17 +586,18 @@ else
 						cd /usr/lib
 						file="/usr/bin/wget"
 						if [ ! -f "$file " ]; then
-							dnf install -y wget
+							dnf install -y wget&>> /DNIF/install.log
+							dnf install -y zip&>> /DNIF/install.log
 						fi
-						wget https://download.java.net/java/GA/jdk14/076bab302c7b4508975440c56f6cc26a/36/GPL/openjdk-14_linux-x64_bin.tar.gz
-						tar -xvf openjdk-14_linux-x64_bin.tar.gz
+						wget https://download.java.net/java/GA/jdk14/076bab302c7b4508975440c56f6cc26a/36/GPL/openjdk-14_linux-x64_bin.tar.gz>> /DNIF/install.log&>> /DNIF/install.log
+						tar -xvf openjdk-14_linux-x64_bin.tar.gz&>> /DNIF/install.log
 						echo "export JAVA_HOME=/usr/lib/jdk-14">>/etc/profile.d/jdk14.sh
 						echo "export PATH=\$PATH:\$JAVA_HOME/bin">>/etc/profile.d/jdk14.sh
 
-						source /etc/profile.d/jdk14.sh
-						mkdir -p /usr/lib/jvm/
-						mkdir -p /usr/lib/jvm/java-14-openjdk-amd64
-						cp -r /usr/lib/jdk-14/* /usr/lib/jvm/java-14-openjdk-amd64/
+						source /etc/profile.d/jdk14.sh&>> /DNIF/install.log
+						mkdir -p /usr/lib/jvm/&>> /DNIF/install.log
+						mkdir -p /usr/lib/jvm/java-14-openjdk-amd64&>> /DNIF/install.log
+						cp -r /usr/lib/jdk-14/* /usr/lib/jvm/java-14-openjdk-amd64/&>> /DNIF/install.log
 
 
         				else
@@ -613,9 +612,9 @@ else
        					fi
 				fi
 
-				mkdir -p /DNIF/CO
-				mkdir -p /DNIF/common
-				mkdir -p /DNIF/backup/core
+				mkdir -p /DNIF/CO&>> /DNIF/install.log
+				mkdir -p /DNIF/common&>> /DNIF/install.log
+				mkdir -p /DNIF/backup/core&>> /DNIF/install.log
 				echo -e "\n[-] Pulling docker Image for CORE\n"
 				sudo podman pull dnif/core:$tag
 
@@ -649,8 +648,8 @@ services:
 				podman-compose up -d
 				echo -e "[-] Starting container... \e[1;32m[DONE] \e[0m\n"
 
-    				mkdir -p /DNIF/DL
-				mkdir -p /DNIF/backup/dn
+    				mkdir -p /DNIF/DL&>> /DNIF/install.log
+				mkdir -p /DNIF/backup/dn&>> /DNIF/install.log
 				echo -e "[-] Pulling docker Image for Datanode\n"
 				sudo podman pull dnif/datanode:$tag
 
@@ -692,7 +691,7 @@ services:
 				podman_check
 				podman_compose_check
 				sysctl_check
-				setenforce 0
+				setenforce 0&>> /DNIF/install.log
 
 				mkdir -p /DNIF/LC
 				echo -e "[-] Pulling docker Image for Console\n"
@@ -721,7 +720,7 @@ services:
 				podman_check
 				podman_compose_check
 				sysctl_check
-				setenforce 0
+				setenforce 0&>> /DNIF/install.log
 
 
 				echo -e "[-] Checking for JDK \n"
@@ -745,15 +744,15 @@ services:
                                                         dnf install -y wget
                                                 fi
                                                 #dnf install -y wget
-                                                wget https://download.java.net/java/GA/jdk14/076bab302c7b4508975440c56f6cc26a/36/GPL/openjdk-14_linux-x64_bin.tar.gz
-                                                tar -xvf openjdk-14_linux-x64_bin.tar.gz
+                                                wget https://download.java.net/java/GA/jdk14/076bab302c7b4508975440c56f6cc26a/36/GPL/openjdk-14_linux-x64_bin.tar.gz&>> /DNIF/install.log
+                                                tar -xvf openjdk-14_linux-x64_bin.tar.gz&>> /DNIF/install.log
                                                 echo "export JAVA_HOME=/usr/lib/jdk-14">>/etc/profile.d/jdk14.sh
                                                 echo "export PATH=\$PATH:\$JAVA_HOME/bin">>/etc/profile.d/jdk14.sh
 
-                                                source /etc/profile.d/jdk14.sh
-                                                mkdir -p /usr/lib/jvm/
-                                                mkdir -p /usr/lib/jvm/java-14-openjdk-amd64
-                                                cp -r /usr/lib/jdk-14/* /usr/lib/jvm/java-14-openjdk-amd64/
+                                                source /etc/profile.d/jdk14.sh&>> /DNIF/install.log
+                                                mkdir -p /usr/lib/jvm/&>> /DNIF/install.log
+                                                mkdir -p /usr/lib/jvm/java-14-openjdk-amd64&>> /DNIF/install.log
+                                                cp -r /usr/lib/jdk-14/* /usr/lib/jvm/java-14-openjdk-amd64/&>> /DNIF/install.log
 
 
                                         else
@@ -768,9 +767,9 @@ services:
                                         fi
                                 fi
 
-				mkdir -p /DNIF/DL
-				mkdir -p /DNIF/common
-				mkdir -p /DNIF/backup/dn
+				mkdir -p /DNIF/DL&>> /DNIF/install.log
+				mkdir -p /DNIF/common&>> /DNIF/install.log
+				mkdir -p /DNIF/backup/dn&>> /DNIF/install.log
 				echo -e "[-] Pulling docker Image for Datanode\n"
 				sudo podman pull dnif/datanode:$tag
 
@@ -816,9 +815,9 @@ services:
 				podman_check
 				podman_compose_check
 				sysctl_check
-				setenforce 0
-				mkdir -p /DNIF/AD
-				mkdir -p /DNIF/backup/ad
+				setenforce 0&>> /DNIF/install.log
+				mkdir -p /DNIF/AD&>> /DNIF/install.log
+				mkdir -p /DNIF/backup/ad&>> /DNIF/install.log
 				echo -e "[-] Pulling docker Image for Adapter\n"
 				sudo podman pull dnif/adapter:$tag
 
