@@ -589,7 +589,7 @@ else
 							dnf install -y wget&>> /DNIF/install.log
 							dnf install -y zip&>> /DNIF/install.log
 						fi
-						wget https://download.java.net/java/GA/jdk14/076bab302c7b4508975440c56f6cc26a/36/GPL/openjdk-14_linux-x64_bin.tar.gz>> /DNIF/install.log&>> /DNIF/install.log
+						wget https://download.java.net/java/GA/jdk14/076bab302c7b4508975440c56f6cc26a/36/GPL/openjdk-14_linux-x64_bin.tar.gz&>> /DNIF/install.log
 						tar -xvf openjdk-14_linux-x64_bin.tar.gz&>> /DNIF/install.log
 						echo "export JAVA_HOME=/usr/lib/jdk-14">>/etc/profile.d/jdk14.sh
 						echo "export PATH=\$PATH:\$JAVA_HOME/bin">>/etc/profile.d/jdk14.sh
@@ -741,7 +741,7 @@ services:
 						cd /usr/lib
 						file="/usr/bin/wget"
                                                 if [ ! -f "$file " ]; then
-                                                        dnf install -y wget
+                                                        dnf install -y wget&>> /DNIF/install.log
                                                 fi
                                                 #dnf install -y wget
                                                 wget https://download.java.net/java/GA/jdk14/076bab302c7b4508975440c56f6cc26a/36/GPL/openjdk-14_linux-x64_bin.tar.gz&>> /DNIF/install.log
