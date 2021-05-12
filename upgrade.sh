@@ -22,7 +22,7 @@ upgrade_docker_container () {
 		do
 			if [[  `echo $LREAD | grep -o "Server is now running"` ]]; then
 				((i=i+1))
-				echo -e "\nBooting up container"
+				echo -e "\nBooting up container\n"
 				if [[ "$i" == "2" ]]; then
 					id="$(pidof docker-compose)"
 					kill -9 $id
