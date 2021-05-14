@@ -51,6 +51,7 @@ upgrade_docker_container () {
                 cd /DNIF/AD
 		echo -e "\n[-] Pulling docker Image for $1\n"
                 sed -i s/"$2"/"$3"/g /DNIF/AD/docker-compose.yaml
+		sed -i '/volumes:/i\  tmpfs:/DNIF \' docker-compose.yaml
                 docker-compose up -d
 		docker ps
 	fi
