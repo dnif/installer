@@ -218,7 +218,7 @@ else
 		case $1 in
 			1)
 				echo -e "[-] Installing the CORE \n"
-				sleep 2
+				sleep 60
 				if [[ "$1" == "proxy" ]]; then
 					ProxyUrl=""
 					while [[ ! "$ProxyUrl" ]]; do
