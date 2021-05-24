@@ -232,58 +232,13 @@ else
 				docker_check
 				compose_check
 				sysctl_check
-				#ufw -f reset&>> /DNIF/install.log
-				if [[ $ProxyUrl ]]; then
-					mkdir -p /etc/systemd/system/docker.service.d
-					echo -e "[Service]
-	Environment=\"HTTPS_PROXY=$ProxyUrl\"">/etc/systemd/system/docker.service.d/http-proxy.conf
-
-					sudo systemctl daemon-reload
-					sudo systemctl restart docker
-				fi
-				apt-get -y install openjdk-14-jdk
-				echo -e "[-] Checking for JDK \n"
-				if type -p java; then
-					_java=java
-				elif [[ -n "$JAVA_HOME" ]] && [[ -x "$JAVA_HOME/bin/java" ]]; then
-					echo -e "[-] Found java executable in $JAVA_HOME \n"
-					_java="$JAVA_HOME/bin/java"
-				else
-					default="Y"
-					echo -e "[-] To proceed further you have to install openjdk14 before installation\n"
-					read -p "[-] To install OpenJdk14 type [Y/n] " var
-					#read -r var
-					input=${var:-$default}
-					temp=${input^^}
-					if [ "$temp" == "Y" ]; then
-						apt-get -y install openjdk-14-jdk&>> /DNIF/install.log
-					else
-						echo "[-] Aborted"
-						exit 0
-					fi
-				fi
-				if [[ "$_java" ]]; then
-					version=$("$_java" -version 2>&1 | awk -F '"' '/version/ {print $2}')
-					if [[ "$version" == "14.0.2" ]]; then
-						echo -e "[-] OpenJdk $version version is running\n"
-					fi
-				fi
+				apt-get -y install openjdk-14-jdk&>> /DNIF/install.log
 				echo -e "\n[-] Pulling docker Image for CORE\n"
 				docker pull dnif/core:$tag
 				echo -e "[-] Pulling docker Image for Datanode\n"
 				docker pull dnif/datanode:$tag
 				cd /
 				sudo mkdir -p DNIF
-				COREIP=""
-				while [[ ! $COREIP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; do
-					echo -e "ENTER CORE IP: \c"
-					read -r COREIP
-				done
-				#ProxyUrl=""
-				#while [[ ! "$ProxyUrl" ]]; do
-				#	echo -e "ENTER Proxy url: \c"
-				#	read -r ProxyUrl
-				#done
 				sudo echo -e "version: "\'2.0\'"
 services:
   core:
@@ -297,7 +252,7 @@ services:
       - /DNIF/common:/common
       - /DNIF/backup/core:/backup
     environment:
-      - "\'CORE_IP="$COREIP"\'"
+      - "\'CORE_IP="$2"\'"
       - "\'PROXY="$ProxyUrl"\'"
     ulimits:
       memlock:
