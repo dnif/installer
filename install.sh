@@ -499,6 +499,7 @@ services:
   environment:
    - "\'CORE_IP="$COREIP"\'"
    - "\'PROXY="$ProxyUrl"\'"
+  tmpfs: /DNIF
   volumes:
    - /DNIF/AD:/dnif
    - /DNIF/backup/ad:/backup

@@ -49,9 +49,12 @@ upgrade_docker_container () {
 		fi
 	elif [[ "$1" == "adapter" ]]; then
                 cd /DNIF/AD
+		file=/DNIF/AD/docker-compose.yaml
 		echo -e "\n[-] Pulling docker Image for $1\n"
                 sed -i s/"$2"/"$3"/g /DNIF/AD/docker-compose.yaml
-		sed -i '/volumes:/i\  tmpfs: /DNIF \' docker-compose.yaml
+		if ! grep -q "tmfs" $file ; then
+			sed -i '/volumes:/i\  tmpfs: /DNIF \' docker-compose.yaml
+		fi
                 docker-compose up -d
 		docker ps
 	fi
