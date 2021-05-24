@@ -206,18 +206,18 @@ else
 		echo -e "[-] Checking operating system for compatibility - ... \e[1;32m[DONE] \e[0m\n"
 		echo -e "** Please report issues to https://github.com/dnif/installer/issues"
 		echo -e "** for more information visit https://docs.dnif.it/v9/docs/high-level-dnif-architecture\n"
-		echo -e "* Select a DNIF component you would like to install"
-		echo -e "    [1] Core (CO)"
-		echo -e "    [2] Console (LC)"
-		echo -e "    [3] Datanode (DN)"
-			echo -e "    [4] Adapter (AD)\n"
-		COMP=""
-		while [[ ! $COMP =~ ^[1-4] ]]; do
-			echo -e "Pick the number corresponding to the component (1 - 4):  \c"
-			read -r COMP
-			done
-		echo -e "-----------------------------------------------------------------------------------------"
-		case "${COMP^^}" in
+		#echo -e "* Select a DNIF component you would like to install"
+		#echo -e "    [1] Core (CO)"
+		#echo -e "    [2] Console (LC)"
+		#echo -e "    [3] Datanode (DN)"
+		#	echo -e "    [4] Adapter (AD)\n"
+		#COMP=""
+		#while [[ ! $COMP =~ ^[1-4] ]]; do
+		#	echo -e "Pick the number corresponding to the component (1 - 4):  \c"
+		#	read -r COMP
+		#	done
+		#echo -e "-----------------------------------------------------------------------------------------"
+		case $1 in
 			1)
 				echo -e "[-] Installing the CORE \n"
 				sleep 2
@@ -241,6 +241,7 @@ else
 					sudo systemctl daemon-reload
 					sudo systemctl restart docker
 				fi
+				apt-get -y install openjdk-14-jdk
 				echo -e "[-] Checking for JDK \n"
 				if type -p java; then
 					_java=java
