@@ -232,7 +232,7 @@ else
 				docker_check
 				compose_check
 				sysctl_check
-				ufw -f reset&>> /DNIF/install.log
+				#ufw -f reset&>> /DNIF/install.log
 				if [[ $ProxyUrl ]]; then
 					mkdir -p /etc/systemd/system/docker.service.d
 					echo -e "[Service]
