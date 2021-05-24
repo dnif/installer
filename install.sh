@@ -87,8 +87,6 @@ function sysctl_check() {
 		net.core.rmem_default=33554432
 		net.core.rmem_max=33554432" >>/etc/sysctl.conf
 
-		sysctl -p&>> /DNIF/install.log
-		#ufw -f reset&>> /DNIF/install.log
 	fi
 
 }
@@ -436,11 +434,11 @@ services:
 
 				echo -e "[-] Pulling docker Image for Adapter\n"
 				docker pull dnif/adapter:$tag
-				COREIP=""
-				while [[ ! $COREIP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; do
-					echo -e "ENTER CORE IP: \c"
-					read -r COREIP
-				done
+				#COREIP=""
+				#while [[ ! $COREIP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; do
+				#	echo -e "ENTER CORE IP: \c"
+				#	read -r COREIP
+				#done
 				cd /
 				sudo mkdir -p /DNIF
 				sudo mkdir -p /DNIF/AD
@@ -453,7 +451,7 @@ services:
   cap_add:
    - NET_ADMIN
   environment:
-   - "\'CORE_IP="$COREIP"\'"
+   - "\'CORE_IP="$2"\'"
    - "\'PROXY="$ProxyUrl"\'"
   volumes:
    - /DNIF/AD:/dnif
