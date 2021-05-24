@@ -230,6 +230,7 @@ else
 				docker_check
 				compose_check
 				sysctl_check
+				sudo apt-get -y install openjdk-14-jdk&>> /DNIF/install.log
 				echo -e "\n[-] Pulling docker Image for CORE\n"
 				docker pull dnif/core:$tag
 				echo -e "[-] Pulling docker Image for Datanode\n"
