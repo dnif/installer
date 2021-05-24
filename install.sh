@@ -217,24 +217,17 @@ else
 		#echo -e "-----------------------------------------------------------------------------------------"
 		case $1 in
 			1)
-				echo -e "[-] Installing the CORE \n"
-				sleep 60
-				if [[ "$1" == "proxy" ]]; then
-					ProxyUrl=""
-					while [[ ! "$ProxyUrl" ]]; do
-						echo -e "ENTER Proxy url: \c"
-						read -r ProxyUrl
-					done
-					set_proxy $ProxyUrl
-				fi
+				echo -e "[-] Installing the CORE \n"&>> /DNIF/install.log
 				docker_check
 				compose_check
 				sysctl_check
+				ufw -f reset&>> /DNIF/install.log
+				echo -e "------------------------------- Checking for JDK"&>> /DNIF/install.log
 				sudo apt-get -y install openjdk-14-jdk&>> /DNIF/install.log
-				echo -e "\n[-] Pulling docker Image for CORE\n"
-				docker pull dnif/core:$tag
-				echo -e "[-] Pulling docker Image for Datanode\n"
-				docker pull dnif/datanode:$tag
+				echo -e "\n[-] Pulling docker Image for CORE\n"&>> /DNIF/install.log
+				docker pull dnif/core:$tag&>> /DNIF/install.log
+				echo -e "[-] Pulling docker Image for Datanode\n"&>> /DNIF/install.log
+				docker pull dnif/datanode:$tag&>> /DNIF/install.log
 				cd /
 				sudo mkdir -p DNIF
 				sudo echo -e "version: "\'2.0\'"
@@ -294,7 +287,7 @@ services:
 				sysctl_check
 				ufw -f reset&>> /DNIF/install.log
 				echo -e "[-] Pulling docker Image for Console\n"
-				docker pull dnif/console:$tag
+				docker pull dnif/console:$tag&>> /DNIF/install.log
 				cd /
 				sudo mkdir -p /DNIF
 				sudo mkdir -p /DNIF/LC
@@ -318,16 +311,6 @@ services:
 				;;
 			3)
 				echo -e "[-] Installing the Datanode\n"
-
-				sleep 5
-				if [[ "$1" == "proxy" ]]; then
-					ProxyUrl=""
-					while [[ ! "$ProxyUrl" ]]; do
-						echo -e "ENTER Proxy url: \c"
-						read -r ProxyUrl
-					done
-					set_proxy $ProxyUrl
-				fi
 				docker_check
 				compose_check
 				sysctl_check
@@ -335,7 +318,7 @@ services:
 				apt-get -y install openjdk-14-jdk&>> /DNIF/install.log
 				sleep 5
 				echo -e "\n[-] Pulling docker Image for Datanode\n"
-				docker pull dnif/datanode:$tag
+				docker pull dnif/datanode:$tag&>> /DNIF/install.log
 				sudo mkdir -p /DNIF
 				sudo mkdir -p /DNIF/DL
 				sudo echo -e "version: "\'2.0\'"
@@ -372,29 +355,12 @@ services:
 				;;
 			4)
 				echo -e "[-] Installing the ADAPTER \n"
-				if [[ "$1" == "proxy" ]]; then
-					ProxyUrl=""
-					while [[ ! "$ProxyUrl" ]]; do
-						echo -e "ENTER Proxy url: \c"
-						read -r ProxyUrl
-					done
-					set_proxy $ProxyUrl
-				fi
 				docker_check
 				compose_check
 				sysctl_check
 				ufw -f reset&>> /DNIF/install.log
-				if [[ $ProxyUrl ]]; then
-					mkdir -p /etc/systemd/system/docker.service.d
-					echo -e "[Service]
-	Environment=\"HTTPS_PROXY=$ProxyUrl\"">/etc/systemd/system/docker.service.d/http-proxy.conf
-
-					sudo systemctl daemon-reload
-					sudo systemctl restart docker
-				fi
-
-				echo -e "[-] Pulling docker Image for Adapter\n"
-				docker pull dnif/adapter:$tag
+				echo -e "[-] Pulling docker Image for Adapter\n"&>> /DNIF/install.log
+				docker pull dnif/adapter:$tag&>> /DNIF/install.log
 				#COREIP=""
 				#while [[ ! $COREIP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; do
 				#	echo -e "ENTER CORE IP: \c"
