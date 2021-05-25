@@ -272,15 +272,15 @@ services:
         hard: -1
     container_name: datanode-master-v9">>/DNIF/docker-compose.yaml
 				cd /DNIF || exit
-				echo -e "[-] Starting container... \n"
+				echo -e "[-] Starting container... \n"&>> /DNIF/install.log
 				docker-compose up -d
 				echo -e "[-] Starting container... \e[1;32m[DONE] \e[0m\n"
-				docker ps
-				echo -e "** Congratulations you have successfully installed the CORE \n"
+				docker ps&>> /DNIF/install.log
+				echo -e "** Congratulations you have successfully installed the CORE \n"&>> /DNIF/install.log
 				;;
 
 			2)
-				echo -e "[-] Installing the Console \n"
+				echo -e "[-] Installing the Console \n"&>> /DNIF/install.log
 				sleep 5
 				docker_check
 				compose_check
@@ -303,15 +303,16 @@ services:
    - /DNIF/LC:/dnif/lc
   container_name: console-v9">/DNIF/LC/docker-compose.yaml
 				cd /DNIF/LC || exit
-				echo -e "[-] Starting container... \n"
+				echo -e "[-] Starting container... \n"&>> /DNIF/install.log
 				docker-compose up -d
 				echo -e "[-] Starting container... DONE\n"
-				docker ps
-				echo -e "** Congratulations you have successfully installed the Console\n"
+				docker ps&>> /DNIF/install.log
+				echo -e "** Congratulations you have successfully installed the Console\n"&>> /DNIF/install.log
 				;;
 			3)
-				echo -e "[-] Installing the Datanode\n"
+				echo -e "[-] Installing the Datanode\n"&>> /DNIF/install.log
 				docker_check
+				sleep 120
 				compose_check
 				sysctl_check
 				ufw -f reset&>> /DNIF/install.log
@@ -345,7 +346,7 @@ services:
     container_name: datanode-v9">>/DNIF/DL/docker-compose.yaml
 				cd /DNIF/DL
 				#IP=$(ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/')
-				echo -e "[-] Starting container... \n"&>> /DNIF/install.log
+				echo -e "[-] Starting container... \n"&>> /DNIF/install.log&>> /DNIF/install.log
 				docker-compose up -d
 				echo -e "[-] Starting container ... \e[1;32m[DONE] \e[0m"&>> /DNIF/install.log
 				docker ps&>> /DNIF/install.log
@@ -355,6 +356,7 @@ services:
 			4)
 				echo -e "[-] Installing the ADAPTER \n"
 				docker_check
+				sleep 120
 				compose_check
 				sysctl_check
 				ufw -f reset&>> /DNIF/install.log
@@ -385,12 +387,12 @@ services:
   container_name: adapter-v9">/DNIF/AD/docker-compose.yaml
 				cd /DNIF/AD || exit
 				IP=$(ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/')
-				echo -e "[-] Starting container...\n "
+				echo -e "[-] Starting container...\n "&>> /DNIF/install.log
 				docker-compose up -d
 				echo -e "[-] Starting container ... \e[1;32m[DONE] \e[0m\n"
-				docker ps
+				docker ps&>> /DNIF/install.log
 				echo -e "** Congratulations you have successfully installed the Adapter\n"
-				echo -e "**   Activate the Adapter ($IP) from the components page\n"
+				echo -e "**   Activate the Adapter ($IP) from the components page\n"&>> /DNIF/install.log
 				;;
 			esac
 
