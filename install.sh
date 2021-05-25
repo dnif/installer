@@ -284,8 +284,8 @@ services:
 				sleep 5
 				docker_check
 				compose_check
-				sysctl_check
-				ufw -f reset&>> /DNIF/install.log
+				#sysctl_check
+				#ufw -f reset&>> /DNIF/install.log
 				echo -e "[-] Pulling docker Image for Console\n"&>> /DNIF/install.log
 				docker pull dnif/console:$tag&>> /DNIF/install.log
 				cd /
