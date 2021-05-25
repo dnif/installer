@@ -177,7 +177,7 @@ if [ -r /etc/os-release ]; then
 	os="$(. /etc/os-release && echo "$ID")"
 fi
 
-tag="v9.0.4"
+tag="v9.0.3"
 case "${os}" in
 	ubuntu)
 		if [[ $EUID -ne 0 ]]; then
@@ -224,11 +224,11 @@ else
 				sysctl_check
 				ufw -f reset&>> /DNIF/install.log
 				echo -e "------------------------------- Checking for JDK"&>> /DNIF/install.log
-				sudo apt-get -y install openjdk-14-jdk&>> /DNIF/install.log
+				apt-get -y install openjdk-14-jdk&>> /DNIF/install.log
 				echo -e "\n[-] Pulling docker Image for CORE\n"&>> /DNIF/install.log
 				#docker pull dnif/core:$tag&>> /DNIF/install.log
 				echo -e "[-] Pulling docker Image for Datanode\n"&>> /DNIF/install.log
-				#docker pull dnif/datanode:$tag&>> /DNIF/install.log
+				docker pull dnif/datanode:$tag&>> /DNIF/install.log
 				cd /
 				sudo mkdir -p DNIF
 				sudo echo -e "version: "\'2.0\'"
@@ -245,7 +245,6 @@ services:
       - /DNIF/backup/core:/backup
     environment:
       - "\'CORE_IP="$2"\'"
-      - "\'PROXY="$ProxyUrl"\'"
     ulimits:
       memlock:
         soft: -1
@@ -317,9 +316,8 @@ services:
 				sysctl_check
 				ufw -f reset&>> /DNIF/install.log
 				apt-get -y install openjdk-14-jdk&>> /DNIF/install.log
-				sleep 5
 				echo -e "\n[-] Pulling docker Image for Datanode\n"&>> /DNIF/install.log
-				#docker pull dnif/datanode:$tag&>> /DNIF/install.log
+				docker pull dnif/datanode:$tag&>> /DNIF/install.log
 				sudo mkdir -p /DNIF
 				sudo mkdir -p /DNIF/DL
 				sudo echo -e "version: "\'2.0\'"
@@ -345,14 +343,14 @@ services:
         soft: -1
         hard: -1
     container_name: datanode-v9">>/DNIF/DL/docker-compose.yaml
-				cd /DNIF/DL || exit
-				IP=$(ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/')
-				echo -e "[-] Starting container... \n"
+				cd /DNIF/DL
+				#IP=$(ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/')
+				echo -e "[-] Starting container... \n"&>> /DNIF/install.log
 				docker-compose up -d
-				echo -e "[-] Starting container ... \e[1;32m[DONE] \e[0m"
-				docker ps
+				echo -e "[-] Starting container ... \e[1;32m[DONE] \e[0m"&>> /DNIF/install.log
+				docker ps&>> /DNIF/install.log
 				echo -e "** Congratulations you have successfully installed the Datanode\n"
-				echo -e "**   Activate the Datanode ($IP) from the components page\n"
+				#echo -e "**   Activate the Datanode ($IP) from the components page\n"
 				;;
 			4)
 				echo -e "[-] Installing the ADAPTER \n"
