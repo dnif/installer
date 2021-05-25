@@ -86,6 +86,7 @@ function sysctl_check() {
 		#n/w receive buffer
 		net.core.rmem_default=33554432
 		net.core.rmem_max=33554432" >>/etc/sysctl.conf
+		sysctl -p
 
 	fi
 
@@ -225,9 +226,9 @@ else
 				echo -e "------------------------------- Checking for JDK"&>> /DNIF/install.log
 				sudo apt-get -y install openjdk-14-jdk&>> /DNIF/install.log
 				echo -e "\n[-] Pulling docker Image for CORE\n"&>> /DNIF/install.log
-				docker pull dnif/core:$tag&>> /DNIF/install.log
+				#docker pull dnif/core:$tag&>> /DNIF/install.log
 				echo -e "[-] Pulling docker Image for Datanode\n"&>> /DNIF/install.log
-				docker pull dnif/datanode:$tag&>> /DNIF/install.log
+				#docker pull dnif/datanode:$tag&>> /DNIF/install.log
 				cd /
 				sudo mkdir -p DNIF
 				sudo echo -e "version: "\'2.0\'"
@@ -286,7 +287,7 @@ services:
 				compose_check
 				sysctl_check
 				ufw -f reset&>> /DNIF/install.log
-				echo -e "[-] Pulling docker Image for Console\n"
+				echo -e "[-] Pulling docker Image for Console\n"&>> /DNIF/install.log
 				docker pull dnif/console:$tag&>> /DNIF/install.log
 				cd /
 				sudo mkdir -p /DNIF
@@ -317,8 +318,8 @@ services:
 				ufw -f reset&>> /DNIF/install.log
 				apt-get -y install openjdk-14-jdk&>> /DNIF/install.log
 				sleep 5
-				echo -e "\n[-] Pulling docker Image for Datanode\n"
-				docker pull dnif/datanode:$tag&>> /DNIF/install.log
+				echo -e "\n[-] Pulling docker Image for Datanode\n"&>> /DNIF/install.log
+				#docker pull dnif/datanode:$tag&>> /DNIF/install.log
 				sudo mkdir -p /DNIF
 				sudo mkdir -p /DNIF/DL
 				sudo echo -e "version: "\'2.0\'"
