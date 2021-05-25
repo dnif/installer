@@ -197,7 +197,7 @@ else
 
 	echo -n "Operating system compatibility"
 	sleep 2
-	if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 20.04 by the number of release you want
+	if [[ "$VER" = "20.04" ]] && [[ "$ARCH" = "aarch64" ]];  then # replace 20.04 by the number of release you want
 		echo -e " ... \e[1;32m[OK] \e[0m"
 		echo -n "Architecture compatibility "
 		echo -e " ... \e[1;32m[OK] \e[0m\n"
