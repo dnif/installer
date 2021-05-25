@@ -226,7 +226,7 @@ else
 				echo -e "------------------------------- Checking for JDK"&>> /DNIF/install.log
 				apt-get -y install openjdk-14-jdk&>> /DNIF/install.log
 				echo -e "\n[-] Pulling docker Image for CORE\n"&>> /DNIF/install.log
-				#docker pull dnif/core:$tag&>> /DNIF/install.log
+				docker pull dnif/core:$tag&>> /DNIF/install.log
 				echo -e "[-] Pulling docker Image for Datanode\n"&>> /DNIF/install.log
 				docker pull dnif/datanode:$tag&>> /DNIF/install.log
 				cd /
@@ -265,7 +265,7 @@ services:
       - /DNIF/common:/common
       - /DNIF/backup/dn:/backup
     environment:
-      - "\'CORE_IP="$COREIP"\'"
+      - "\'CORE_IP="$2"\'"
     ulimits:
       memlock:
         soft: -1
