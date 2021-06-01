@@ -1,12 +1,12 @@
 # DNIF Installer
 Basic DNIF (Easy) Installer, helps you get started without doing much.
 
-`bash -c "$(curl -s https://raw.githubusercontent.com/dnif/installer/9.0.4/install.sh)"`
+`bash -c "$(curl -s https://raw.githubusercontent.com/dnif/installer/9.0.5/install.sh)"`
 
 # DNIF Upgrading
 
-1) bash -c "$(curl -s https://raw.githubusercontent.com/dnif/installer/9.0.4/upgradepre.sh)" 
-2) bash -c "$(curl -s https://raw.githubusercontent.com/dnif/installer/9.0.4/upgrade.sh)"
+1) bash -c "$(curl -s https://raw.githubusercontent.com/dnif/installer/9.0.5/upgradepre.sh)" 
+2) bash -c "$(curl -s https://raw.githubusercontent.com/dnif/installer/9.0.5/upgrade.sh)"
 
 Currently Supported Operating Systems -
 - Ubuntu 20.04 (LTS) - x86_64
