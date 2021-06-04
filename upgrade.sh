@@ -94,17 +94,17 @@ else
 					((a=i+2))
 					final="$(echo $last_tag|cut -d " " -f $a)"
 					if [ "$final" ]; then
-						echo "$final"
+						#echo "$final"
 						upgrade_docker_container $container_name $ver $final
 						break
 					else
 						((b=i+1))
 						final="$(echo $last_tag|cut -d " " -f $b)"
 						if [ "$final" ]; then
-							echo "$final"
+							#echo "$final"
 							upgrade_docker_container $container_name $ver $final
 						else
-							echo "up-to-date"
+							echo -e  "[-] Up-to-date"
 						fi
 					fi
 					break
