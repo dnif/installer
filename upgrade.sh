@@ -21,9 +21,10 @@ upgrade_docker_container () {
 		docker-compose logs -f| while read LREAD
 		do
 			if [[  `echo $LREAD | grep -o "Server is now running"` ]]; then
-				((i=i+1))
+				
+				((count=count+1))
 				echo -e "\nBooting up container\n"
-				if [[ "$i" == "2" ]]; then
+				if [[ "$count" == "2" ]]; then
 					id="$(pidof docker-compose)"
 					kill -9 $id
 					exit 0
@@ -72,38 +73,46 @@ if [[ $EUID -ne 0 ]]; then
 else
 	container_list=("core" "console" "adapter" "datanode" )
 	echo -e "[-] Finding docker Image"
-	for i in "${container_list[@]}"
+	for container_name in "${container_list[@]}"
 	do
 		#echo -e "[-] Finding docker Image"
-		if [ "$(docker images|grep $i|awk 'NR==1 {print $1; exit}'|cut -d "/" -f2)" ]; then
+		if [ "$(docker images|grep $container_name|awk 'NR==1 {print $1; exit}'|cut -d "/" -f2)" ]; then
 			#echo -e "[-] Found $i docker container"
 			echo -e "[-] Checking for current running version"
 			sleep 3
-			current_tag="$(docker images|grep $i|awk 'NR==1 {print $2; exit}')"
+			ver="$(docker images|grep $container_name|awk 'NR==1 {print $2; exit}')"
 			
 			echo -e "[-] Found current version $current_tag"
-			image="$(docker images|grep $i|awk 'NR==1 {print $1; exit}'|cut -d "/" -f2)"
-			
+			image="$(docker images|grep $container_name|awk 'NR==1 {print $1; exit}'|cut -d "/" -f2)"
+		   	
 			echo -e "[-] Fetching Tags from docker hub"
-			#required_tag="$(wget -q https://registry.hub.docker.com/v1/repositories/dnif/"$image"/tags -O - | tr -d '[]" ' | tr '}' '\n' | awk -F: '{print $3}'|sort -V )"
-			if [ "$current_tag" == "v9.0" ]; then
-				required_tag="v9.0.1"
-				upgrade_docker_container $i $current_tag $required_tag
-			elif [ "$current_tag" == "v9.0.1" ]; then
-				required_tag="v9.0.3"
-				upgrade_docker_container $i $current_tag $required_tag
-			elif [ "$current_tag" == "v9.0.2" ]; then
-                                required_tag="v9.0.4"
-                                upgrade_docker_container $i $current_tag $required_tag
-			elif [ "$current_tag" == "v9.0.3" ]; then
-                                required_tag="v9.0.5"
-                                upgrade_docker_container $i $current_tag $required_tag
-			elif [ "$current_tag" == "v9.0.4" ]; then
-                                required_tag="v9.0.5"
-                                upgrade_docker_container $i $current_tag $required_tag
-			else
-				echo -e "up-to-date ${required}\n"
-			fi
+			last_tag="$(wget -q https://registry.hub.docker.com/v1/repositories/dnif/"$image"/tags -O - | tr -d '[]" ' | tr '}' '\n' | awk -F: '{print $3}'|sort -V )"
+			END=12
+			for ((i=1;i<=END;i++)); do
+				new="$(echo $last_tag|cut -d " " -f $i)"
+				if [ "$new" == "$ver" ]; then
+					((a=i+2))
+					final="$(echo $last_tag|cut -d " " -f $a)"
+					if [ "$final" ]; then
+						echo "$final"
+						upgrade_docker_container $container_name $ver $final
+						break
+					else
+						((b=i+1))
+						final="$(echo $last_tag|cut -d " " -f $b)"
+						if [ "$final" ]; then
+							echo "$final"
+							upgrade_docker_container $container_name $ver $final
+						else
+							echo "up-to-date"
+						fi
+					fi
+					break
+				fi
+			done
+
+
+                                
 		fi
 	done
 fi

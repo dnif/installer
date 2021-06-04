@@ -46,43 +46,47 @@ if [[ $EUID -ne 0 ]]; then
 else
 	container_list=( "adapter-v9" "datanode-v9" "console-v9" "core-v9")
 	echo -e "[-] Finding docker container"
-	for i in "${container_list[@]}"
+	for container_name in "${container_list[@]}"
 	do
 		#echo -e "[-] Finding docker container"
-		if [ "$(docker ps -q -f status=running -f name=^/$i)" ]; then
+		if [ "$(docker ps -q -f status=running -f name=^/$container_name)" ]; then
 
 
-			echo -e "[-] Found $i docker container\n"
+			echo -e "[-] Found $container_name docker container\n"
 			echo -e "[-] Checking for current running version\n"
 			sleep 3
-			current_tag="$(docker ps  -f status=running -f name=^/$i|awk 'NR > 1 {print $2; exit}'|cut -d ":" -f2)"
+			ver="$(docker ps  -f status=running -f name=^/$container_name|awk 'NR > 1 {print $2; exit}'|cut -d ":" -f2)"
 			
 			echo -e "[-] Found current version $current_tag\n"
-			image="$(docker ps -f status=running -f name=^/$i|awk 'NR > 1 {print $2; exit}'|cut -d ":" -f1)"
+			image="$(docker ps -f status=running -f name=^/$container_name|awk 'NR > 1 {print $2; exit}'|cut -d ":" -f1)"
 			
 			#Tags=( "$(wget -q https://registry.hub.docker.com/v1/repositories/"$image"/tags -O - | tr -d '[]" ' | tr '}' '\n' | awk -F: '{print $3}')")
 			echo -e "[-] Fetching Tags from docker hub\n"
-			required_tag="$(wget -q https://registry.hub.docker.com/v1/repositories/"$image"/tags -O - | tr -d '[]" ' | tr '}' '\n' | awk -F: '{print $3}'|sort -V|awk 'END{print}')"
+			last_tag="$(wget -q https://registry.hub.docker.com/v1/repositories/"$image"/tags -O - | tr -d '[]" ' | tr '}' '\n' | awk -F: '{print $3}'|sort -V)"
+			END=12
+			for ((i=1;i<=END;i++)); do
+				new="$(echo $last_tag|cut -d " " -f $i)"
+				if [ "$new" == "$ver" ]; then
+					((a=i+2))
+					final="$(echo $last_tag|cut -d " " -f $a)"
+					if [ "$final" ]; then
+						echo "$final"
+						upgrade_docker_container $container_name $ver $final
+						break
+					else
+						((b=i+1))
+						final="$(echo $last_tag|cut -d " " -f $b)"
+						if [ "$final" ]; then
+							echo "$final"
+							upgrade_docker_container $container_name $ver $final
+						else
+							echo "up-to-date"
+						fi
+					fi
+					break
+				fi
+			done
 			
-			if [ "$current_tag" == "v9.0" ]; then
-				required_tag="v9.0.1"
-				upgrade_docker_container $i $current_tag $required_tag
-			elif [ "$current_tag" == "v9.0.1" ]; then
-				required_tag="v9.0.3"
-				upgrade_docker_container $i $current_tag $required_tag
-			elif [ "$current_tag" == "v9.0.2" ]; then
-                                required_tag="v9.0.4"
-                                upgrade_docker_container $i $current_tag $required_tag
-			elif [ "$current_tag" == "v9.0.3" ]; then
-                                required_tag="v9.0.5"
-                                upgrade_docker_container $i $current_tag $required_tag
-			elif [ "$current_tag" == "v9.0.4" ]; then
-                                required_tag="v9.0.5"
-                                upgrade_docker_container $i $current_tag $required_tag
-
-			else
-				echo "Found updated version ${required_tag}"
-			fi
 
 			
 		fi
