@@ -499,7 +499,7 @@ else
 				mkdir -p /DNIF/common&>> /DNIF/install.log
 				mkdir -p /DNIF/backup/core&>> /DNIF/install.log
 				echo -e "\n[-] Pulling docker Image for CORE\n"&>> /DNIF/install.log
-				sudo podman pull dnif/core:$tag&>> /DNIF/install.log
+				sudo podman pull docker-daemon:docker.io/dnif/core:$tag&>> /DNIF/install.log
 
 				#COREIP=""
 				#while [[ ! $COREIP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; do
@@ -534,7 +534,7 @@ services:
     				mkdir -p /DNIF/DL&>> /DNIF/install.log
 				mkdir -p /DNIF/backup/dn&>> /DNIF/install.log
 				echo -e "[-] Pulling docker Image for Datanode\n"&>> /DNIF/install.log
-				sudo podman pull dnif/datanode:$tag&>> /DNIF/install.log
+				sudo podman pull docker-daemon:docker.io/dnif/datanode:$tag&>> /DNIF/install.log
 
 				echo -e "version: "\'2.0\'"
 services:
@@ -578,7 +578,7 @@ services:
 
 				mkdir -p /DNIF/LC
 				echo -e "[-] Pulling docker Image for Console\n"&>> /DNIF/install.log
-				sudo podman pull dnif/console:$tag&>> /DNIF/install.log
+				sudo podman pull docker-daemon:docker.io/dnif/console:$tag&>> /DNIF/install.log
 
 				sudo echo -e "version: "\'2.0\'"
 services:
@@ -653,7 +653,7 @@ services:
 				mkdir -p /DNIF/common&>> /DNIF/install.log
 				mkdir -p /DNIF/backup/dn&>> /DNIF/install.log
 				echo -e "[-] Pulling docker Image for Datanode\n"&>> /DNIF/install.log
-				sudo podman pull dnif/datanode:$tag&>> /DNIF/install.log
+				sudo podman pull docker-daemon:docker.io/dnif/datanode:$tag&>> /DNIF/install.log
 
 
 
@@ -701,7 +701,7 @@ services:
 				mkdir -p /DNIF/AD&>> /DNIF/install.log
 				mkdir -p /DNIF/backup/ad&>> /DNIF/install.log
 				echo -e "[-] Pulling docker Image for Adapter\n"&>> /DNIF/install.log
-				sudo podman pull dnif/adapter:$tag&>> /DNIF/install.log
+				sudo podman pull docker-daemon:docker.io/dnif/adapter:$tag&>> /DNIF/install.log
 
 				#COREIP=""
 				#while [[ ! $COREIP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; do
