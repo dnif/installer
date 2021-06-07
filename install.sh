@@ -178,7 +178,7 @@ if [ -r /etc/os-release ]; then
 	os="$(. /etc/os-release && echo "$ID")"
 fi
 
-tag="v9.0.4"
+tag="v9.0.5"
 case "${os}" in
 	ubuntu)
 		if [[ $EUID -ne 0 ]]; then
@@ -499,6 +499,7 @@ services:
   environment:
    - "\'CORE_IP="$COREIP"\'"
    - "\'PROXY="$ProxyUrl"\'"
+  tmpfs: /DNIF
   volumes:
    - /DNIF/AD:/dnif
    - /DNIF/backup/ad:/backup
