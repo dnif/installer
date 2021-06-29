@@ -63,7 +63,7 @@ else
 			#Tags=( "$(wget -q https://registry.hub.docker.com/v1/repositories/"$image"/tags -O - | tr -d '[]" ' | tr '}' '\n' | awk -F: '{print $3}')")
 			echo -e "[-] Fetching Tags from docker hub\n"
 			last_tag="$(wget -q https://registry.hub.docker.com/v1/repositories/"$image"/tags -O - | tr -d '[]" ' | tr '}' '\n' | awk -F: '{print $3}'|sort -V)"
-			END=12
+			END=100
 			for ((i=1;i<=END;i++)); do
 				new="$(echo $last_tag|cut -d " " -f $i)"
 				if [ "$new" == "$ver" ]; then
