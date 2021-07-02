@@ -70,15 +70,28 @@ else
 					((a=i+2))
 					final="$(echo $last_tag|cut -d " " -f $a)"
 					if [ "$final" ]; then
-						echo "$final"
-						upgrade_docker_container $container_name $ver $final
-						break
+						if [ "$final" == "v9.0.6" ]; then
+							final="v9.0.7"
+							#echo "$final"
+							upgrade_docker_container $container_name $ver $final
+							break
+						else
+							upgrade_docker_container $container_name $ver $final
+							break
+						fi
 					else
 						((b=i+1))
 						final="$(echo $last_tag|cut -d " " -f $b)"
 						if [ "$final" ]; then
-							echo "$final"
-							upgrade_docker_container $container_name $ver $final
+							if [ "$final" == "v9.0.6" ]; then
+								#echo "$final"
+								upgrade_docker_container $container_name $ver $final
+								break
+							else
+								#echo "$final"
+                                                                upgrade_docker_container $container_name $ver $final
+								break
+							fi
 						else
 							echo "up-to-date"
 						fi
