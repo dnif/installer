@@ -255,7 +255,15 @@ else
 					input=${var:-$default}
 					temp=${input^^}
 					if [ "$temp" == "Y" ]; then
-						apt-get -y install openjdk-14-jdk&>> /DNIF/install.log
+						mkdir -p /usr/lib/jvm/&>> /DNIF/install.log
+						wget https://download.java.net/java/GA/jdk14/076bab302c7b4508975440c56f6cc26a/36/GPL/openjdk-14_linux-x64_bin.tar.gz&>> /DNIF/install.log
+						tar -xvf openjdk-14_linux-x64_bin.tar.gz -C /usr/lib/jvm/ &>> /DNIF/install.log
+						echo "export JAVA_HOME=/usr/lib/jvm/jdk-14">>/etc/profile.d/jdk14.sh
+						echo "export PATH=\$PATH:\$JAVA_HOME/bin">>/etc/profile.d/jdk14.sh
+						mkdir -p /usr/lib/jvm/java-14-openjdk-amd64&>> /DNIF/install.log
+						cp -r /usr/lib/jvm/jdk-14/* /usr/lib/jvm/java-14-openjdk-amd64/&>> /DNIF/install.log
+						source /etc/profile.d/jdk14.sh&>> /DNIF/install.log
+						
 					else
 						echo "[-] Aborted"
 						exit 0
@@ -401,7 +409,15 @@ services:
 					input=${var:-$default}
 					temp=${input^^}
 					if [ "$temp" == "Y" ]; then
-						apt-get -y install openjdk-14-jdk&>> /DNIF/install.log
+						mkdir -p /usr/lib/jvm/&>> /DNIF/install.log
+						wget https://download.java.net/java/GA/jdk14/076bab302c7b4508975440c56f6cc26a/36/GPL/openjdk-14_linux-x64_bin.tar.gz&>> /DNIF/install.log
+						tar -xvf openjdk-14_linux-x64_bin.tar.gz -C /usr/lib/jvm/ &>> /DNIF/install.log
+						echo "export JAVA_HOME=/usr/lib/jvm/jdk-14">>/etc/profile.d/jdk14.sh
+						echo "export PATH=\$PATH:\$JAVA_HOME/bin">>/etc/profile.d/jdk14.sh
+						mkdir -p /usr/lib/jvm/java-14-openjdk-amd64&>> /DNIF/install.log
+						cp -r /usr/lib/jvm/jdk-14/* /usr/lib/jvm/java-14-openjdk-amd64/&>> /DNIF/install.log
+						source /etc/profile.d/jdk14.sh&>> /DNIF/install.log
+						
 					else
 						echo "[-] Aborted"
 						exit 0
