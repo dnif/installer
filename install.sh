@@ -263,6 +263,7 @@ else
 						mkdir -p /usr/lib/jvm/java-14-openjdk-amd64&>> /DNIF/install.log
 						cp -r /usr/lib/jvm/jdk-14/* /usr/lib/jvm/java-14-openjdk-amd64/&>> /DNIF/install.log
 						source /etc/profile.d/jdk14.sh&>> /DNIF/install.log
+						source /etc/profile
 						
 					else
 						echo "[-] Aborted"
@@ -417,6 +418,7 @@ services:
 						mkdir -p /usr/lib/jvm/java-14-openjdk-amd64&>> /DNIF/install.log
 						cp -r /usr/lib/jvm/jdk-14/* /usr/lib/jvm/java-14-openjdk-amd64/&>> /DNIF/install.log
 						source /etc/profile.d/jdk14.sh&>> /DNIF/install.log
+						source /etc/profile
 						
 					else
 						echo "[-] Aborted"
