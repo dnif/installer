@@ -178,7 +178,7 @@ if [ -r /etc/os-release ]; then
 	os="$(. /etc/os-release && echo "$ID")"
 fi
 
-tag="v9mark1"
+tag="v9.1.0"
 case "${os}" in
 	ubuntu)
 		if [[ $EUID -ne 0 ]]; then
@@ -346,5 +346,6 @@ services:
 fi
 		;;
 	esac
+
 
 
