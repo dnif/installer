@@ -178,7 +178,7 @@ if [ -r /etc/os-release ]; then
 	os="$(. /etc/os-release && echo "$ID")"
 fi
 
-tag="v9.1.0"
+tag="v9.1.1"
 case "${os}" in
 	ubuntu)
 		if [[ $EUID -ne 0 ]]; then
@@ -479,10 +479,16 @@ services:
 				if [[ "$1" == "proxy" ]]; then
 					ProxyUrl=""
 					while [[ ! "$ProxyUrl" ]]; do
-						echo -e "ENTER Proxy url: \c"
+						echo -e "Enter Proxy url: \c"
 						read -r ProxyUrl
 					done
 					set_proxy $ProxyUrl
+				elif [[ "$1" == "HOST_IP" ]]; then
+					HOST_IP=""
+					while [[ ! "$HOST_IP" ]]; do
+						echo "Enter HOST_IP: \c"
+						read -r HOST_IP
+					done
 				fi
 				docker_check
 				compose_check
@@ -518,6 +524,7 @@ services:
   environment:
    - "\'CORE_IP="$COREIP"\'"
    - "\'PROXY="$ProxyUrl"\'"
+   - "\'HOST_IP="$HOST_IP"\'"
   tmpfs: /DNIF
   volumes:
    - /DNIF/AD:/dnif
