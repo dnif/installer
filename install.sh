@@ -735,6 +735,7 @@ services:
    - NET_ADMIN
   volumes:
    - /DNIF/LC:/dnif/lc
+   - /DNIF/backup/lc:/backup
   container_name: console-v9">/DNIF/LC/docker-compose.yaml
   				echo -e "[-] Starting container... \n"
 				cd /DNIF/LC
