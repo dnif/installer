@@ -178,7 +178,7 @@ if [ -r /etc/os-release ]; then
 	os="$(. /etc/os-release && echo "$ID")"
 fi
 
-tag="v9.1.1"
+tag="v9.2.0"
 case "${os}" in
 	ubuntu)
 		if [[ $EUID -ne 0 ]]; then
@@ -274,6 +274,9 @@ else
 					version=$("$_java" -version 2>&1 | awk -F '"' '/version/ {print $2}')
 					if [[ "$version" == "14.0.2" ]]; then
 						echo -e "[-] OpenJdk $version version is running\n"
+					else
+                                                echo -e "[-] Found Current OpenJdk version $version, required version is OpenJdk14"
+                                                exit 0
 					fi
 				fi
 				echo -e "\n[-] Pulling docker Image for CORE\n"
@@ -429,6 +432,9 @@ services:
 					version=$("$_java" -version 2>&1 | awk -F '"' '/version/ {print $2}')
 					if [[ "$version" == "14.0.2" ]]; then
 						echo -e "[-] OpenJdk $version version is running\n"
+					else
+                                                echo -e "[-] Found Current OpenJdk version $version, required version is OpenJdk14"
+                                                exit 0
 					fi
 				fi
 				sleep 5
@@ -629,6 +635,9 @@ else
         				version=$("$_java" -version 2>&1 | awk -F '"' '/version/ {print $2}')
         				if [[ "$version" == "14.0.2" ]]; then
                 				echo -e "[-] OpenJdk $version version is running\n"
+					else
+                                                echo -e "[-] Found Current OpenJdk version $version, required version is OpenJdk14"
+                                                exit 0
        					fi
 				fi
 
@@ -784,6 +793,9 @@ services:
                                         version=$("$_java" -version 2>&1 | awk -F '"' '/version/ {print $2}')
                                         if [[ "$version" == "14.0.2" ]]; then
                                                 echo -e "[-] OpenJdk $version version is running\n"
+					else
+                                                echo -e "[-] Found Current OpenJdk version $version, required version is OpenJdk14"
+                                                exit 0
                                         fi
                                 fi
 
