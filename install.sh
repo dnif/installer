@@ -118,6 +118,7 @@ function podman_compose_check() {
 			echo -n "[-] Finding podman-compose installation - found incompatible version"
 			echo -e "... \e[0;31m[ERROR] \e[0m\n"
 			echo -e "[-] Updating podman-compose\n"
+			rm -rf /usr/bin/podman-compose&>> /DNIF/install.log
 			pip3 install https://github.com/containers/podman-compose/archive/devel.tar.gz&>> /DNIF/install.log
 			sudo ln -s /usr/local/bin/podman-compose /usr/bin/podman-compose&>> /DNIF/install.log
 			echo -e "[-] Installing podman-compose - ... \e[1;32m[DONE] \e[0m\n"
@@ -128,6 +129,7 @@ function podman_compose_check() {
 	else
 		echo -e "[-] Finding podman-compose installation - ... \e[1;31m[NEGATIVE] \e[0m\n"
 		echo -e "[-] Installing podman-compose\n"
+		pip3 install --upgrade setuptools&>> /DNIF/install.log
 		pip3 install https://github.com/containers/podman-compose/archive/devel.tar.gz&>> /DNIF/install.log
 		sudo ln -s /usr/local/bin/podman-compose /usr/bin/podman-compose&>> /DNIF/install.log
         	echo -e "[-] Installing podman-compose - ... \e[1;32m[DONE] \e[0m\n"
@@ -272,7 +274,7 @@ else
 				fi
 				if [[ "$_java" ]]; then
 					version=$("$_java" -version 2>&1 | awk -F '"' '/version/ {print $2}')
-					if [[ "$version" == "14.0.2" ]]; then
+					if [[ "$version" == "14" ]]; then
 						echo -e "[-] OpenJdk $version version is running\n"
 					else
                                                 echo -e "[-] Found Current OpenJdk version $version, required version is OpenJdk14"
@@ -378,26 +380,10 @@ services:
 				echo -e "[-] Installing the Datanode\n"
 
 				sleep 5
-				if [[ "$1" == "proxy" ]]; then
-					ProxyUrl=""
-					while [[ ! "$ProxyUrl" ]]; do
-						echo -e "ENTER Proxy url: \c"
-						read -r ProxyUrl
-					done
-					set_proxy $ProxyUrl
-				fi
 				docker_check
 				compose_check
 				sysctl_check
 				ufw -f reset&>> /DNIF/install.log
-				if [[ $ProxyUrl ]]; then
-					mkdir -p /etc/systemd/system/docker.service.d
-					echo -e "[Service]
-	Environment=\"HTTPS_PROXY=$ProxyUrl\"">/etc/systemd/system/docker.service.d/http-proxy.conf
-
-					sudo systemctl daemon-reload
-					sudo systemctl restart docker
-				fi
 
 				echo -e "[-] Checking for JDK \n"
 				if type -p java; then
@@ -430,7 +416,7 @@ services:
 				fi
 				if [[ "$_java" ]]; then
 					version=$("$_java" -version 2>&1 | awk -F '"' '/version/ {print $2}')
-					if [[ "$version" == "14.0.2" ]]; then
+					if [[ "$version" == "14" ]]; then
 						echo -e "[-] OpenJdk $version version is running\n"
 					else
                                                 echo -e "[-] Found Current OpenJdk version $version, required version is OpenJdk14"
@@ -589,10 +575,26 @@ else
 		case "${COMP^^}" in
 			1)
 				echo -e "[-] Installing the CORE \n"
+				if [[ "$1" == "proxy" ]]; then
+					ProxyUrl=""
+					while [[ ! "$ProxyUrl" ]]; do
+						echo -e "ENTER Proxy url: \c"
+						read -r ProxyUrl
+					done
+					set_proxy $ProxyUrl
+				fi
 				podman_check
 				podman_compose_check
 				sysctl_check
 				setenforce 0&>> /DNIF/install.log
+				if [[ $ProxyUrl ]]; then
+					mkdir -p /etc/systemd/system/docker.service.d
+					echo -e "[Service]
+	Environment=\"HTTPS_PROXY=$ProxyUrl\"">/etc/systemd/system/docker.service.d/http-proxy.conf
+
+					sudo systemctl daemon-reload
+					sudo systemctl restart podman
+				fi
 
 
 				echo -e "[-] Checking for JDK \n"
@@ -633,7 +635,7 @@ else
 				fi
 				if [[ "$_java" ]]; then
         				version=$("$_java" -version 2>&1 | awk -F '"' '/version/ {print $2}')
-        				if [[ "$version" == "14.0.2" ]]; then
+        				if [[ "$version" == "14" ]]; then
                 				echo -e "[-] OpenJdk $version version is running\n"
 					else
                                                 echo -e "[-] Found Current OpenJdk version $version, required version is OpenJdk14"
@@ -666,6 +668,7 @@ services:
       - /DNIF/common:/common
       - /DNIF/backup/core:/backup
     environment:
+      - "\'PROXY="$ProxyUrl"\'"
       - "\'CORE_IP="$COREIP"\'"
     ulimits:
       memlock:
@@ -751,7 +754,6 @@ services:
 				sysctl_check
 				setenforce 0&>> /DNIF/install.log
 
-
 				echo -e "[-] Checking for JDK \n"
                                 if type -p java; then
                                         _java=java
@@ -791,7 +793,7 @@ services:
                                 fi
                                 if [[ "$_java" ]]; then
                                         version=$("$_java" -version 2>&1 | awk -F '"' '/version/ {print $2}')
-                                        if [[ "$version" == "14.0.2" ]]; then
+                                        if [[ "$version" == "14" ]]; then
                                                 echo -e "[-] OpenJdk $version version is running\n"
 					else
                                                 echo -e "[-] Found Current OpenJdk version $version, required version is OpenJdk14"
@@ -844,10 +846,26 @@ services:
 				;;
 			4)
 				echo -e "[-] Installing the ADAPTER \n"
+				if [[ "$1" == "proxy" ]]; then
+					ProxyUrl=""
+					while [[ ! "$ProxyUrl" ]]; do
+						echo -e "ENTER Proxy url: \c"
+						read -r ProxyUrl
+					done
+					set_proxy $ProxyUrl
+				fi
 				podman_check
 				podman_compose_check
 				sysctl_check
 				setenforce 0&>> /DNIF/install.log
+				if [[ $ProxyUrl ]]; then
+					mkdir -p /etc/systemd/system/docker.service.d
+					echo -e "[Service]
+	Environment=\"HTTPS_PROXY=$ProxyUrl\"">/etc/systemd/system/docker.service.d/http-proxy.conf
+
+					sudo systemctl daemon-reload
+					sudo systemctl restart podman
+				fi
 				mkdir -p /DNIF/AD&>> /DNIF/install.log
 				mkdir -p /DNIF/backup/ad&>> /DNIF/install.log
 				echo -e "[-] Pulling docker Image for Adapter\n"
@@ -869,6 +887,7 @@ services:
    - NET_ADMIN
   environment:
    - "\'CORE_IP="$COREIP"\'"
+   - "\'PROXY="$ProxyUrl"\'"
   volumes:
    - /DNIF/AD:/dnif
    - /DNIF/backup/ad:/backup
