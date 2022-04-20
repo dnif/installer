@@ -58,6 +58,15 @@ upgrade_docker_container () {
 		fi
                 docker-compose up -d
 		docker ps
+	elif [[ "$1" == "pico" ]]; then
+                cd /DNIF/PICO
+                file="/DNIF/PICO/docker-compose.yaml"
+                if [ -f "$file" ]; then
+                        echo -e "\n[-] Pulling docker Image for $1\n"
+                        sed -i s/"$2"/"$3"/g /DNIF/PICO/docker-compose.yaml
+                        docker-compose up -d
+                        docker ps
+                fi
 	fi
 
 
@@ -71,7 +80,7 @@ if [[ $EUID -ne 0 ]]; then
     echo -e "This script must be run as root ... \e[1;31m[ERROR] \e[0m\n"
     exit 1
 else
-	container_list=("core" "console" "adapter" "datanode" )
+	container_list=("core" "console" "adapter" "datanode" "pico" )
 	echo -e "[-] Finding docker Image"
 	for container_name in "${container_list[@]}"
 	do

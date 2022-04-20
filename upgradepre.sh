@@ -32,6 +32,11 @@ upgrade_docker_container () {
                 docker-compose down
                 #sed -i s/"$2"/"$3"/g /DNIF/AD/docker-compose.yaml
                 docker ps
+	elif [[ "$1" == "pico-v9" ]]; then
+                cd /DNIF/PICO
+                docker-compose down
+                #sed -i s/"$2"/"$3"/g /DNIF/AD/docker-compose.yaml
+                docker ps
 	fi
 
 
@@ -44,7 +49,7 @@ if [[ $EUID -ne 0 ]]; then
     echo -e "This script must be run as root ... \e[1;31m[ERROR] \e[0m\n"
     exit 1
 else
-	container_list=( "adapter-v9" "datanode-v9" "console-v9" "core-v9")
+	container_list=( "adapter-v9" "datanode-v9" "console-v9" "core-v9" "pico-v9")
 	echo -e "[-] Finding docker container"
 	for container_name in "${container_list[@]}"
 	do
