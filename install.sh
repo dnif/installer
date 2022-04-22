@@ -114,7 +114,7 @@ function podman_compose_check() {
 	file="/usr/bin/podman-compose"
 	if [ -f "$file" ]; then
 		version=$(podman-compose version|grep "podman-composer version" |cut -d " " -f4) 
-		if [[ "$version" != "0.1.7dev" ]]; then
+		if [[ "$version" != "1.0.4" ]]; then
 			echo -n "[-] Finding podman-compose installation - found incompatible version"
 			echo -e "... \e[0;31m[ERROR] \e[0m\n"
 			echo -e "[-] Updating podman-compose\n"
@@ -656,7 +656,7 @@ else
 				sudo echo -e "version: "\'2.0\'"
 services:
   core:
-    image: dnif/core:$tag
+    image: docker.io/dnif/core:$tag
     network_mode: "\'host\'"
     restart: unless-stopped
     cap_add:
@@ -672,7 +672,7 @@ services:
       memlock:
         soft: -1
         hard: -1
-    container_name: core-v9">>/DNIF/docker-compose.yaml
+    container_name: core-v9">>/DNIF/podman-compose.yaml
     				cd /DNIF
 				echo -e "[-] Starting container... \n"
 				podman-compose up -d
@@ -686,7 +686,7 @@ services:
 				echo -e "version: "\'2.0\'"
 services:
   datanode:
-    image: dnif/datanode:$tag
+    image: docker.io/dnif/datanode:$tag
     network_mode: "\'host\'"
     restart: unless-stopped
     cap_add:
@@ -704,7 +704,7 @@ services:
       memlock:
         soft: -1
         hard: -1
-    container_name: datanode-v9">>/DNIF/DL/docker-compose.yaml
+    container_name: datanode-v9">>/DNIF/DL/podman-compose.yaml
 				cd /DNIF/DL
 				echo -e "[-] Starting container... \n"
 				podman-compose up -d
@@ -722,7 +722,11 @@ services:
 				podman_compose_check
 				sysctl_check
 				setenforce 0&>> /DNIF/install.log
-
+				file="/usr/bin/wget"
+                                if [ ! -f "$file " ]; then
+					dnf install -y wget&>> /DNIF/install.log
+                                        dnf install -y zip&>> /DNIF/install.log
+                                fi
 				mkdir -p /DNIF/LC
 				echo -e "[-] Pulling docker Image for Console\n"
 				sudo podman pull docker.io/dnif/console:$tag
@@ -730,14 +734,14 @@ services:
 				sudo echo -e "version: "\'2.0\'"
 services:
  console:
-  image: dnif/console:$tag
+  image: docker.io/dnif/console:$tag
   network_mode: "\'host\'"
   restart: unless-stopped
   cap_add:
    - NET_ADMIN
   volumes:
    - /DNIF/LC:/dnif/lc
-  container_name: console-v9">/DNIF/LC/docker-compose.yaml
+  container_name: console-v9">/DNIF/LC/podman-compose.yaml
   				echo -e "[-] Starting container... \n"
 				cd /DNIF/LC
 				podman-compose up -d
@@ -816,7 +820,7 @@ services:
 				echo -e "version: "\'2.0\'"
 services:
   datanode:
-    image: dnif/datanode:$tag
+    image: docker.io/dnif/datanode:$tag
     network_mode: "\'host\'"
     restart: unless-stopped
     cap_add:
@@ -834,7 +838,7 @@ services:
       memlock:
         soft: -1
         hard: -1
-    container_name: datanode-v9">>/DNIF/DL/docker-compose.yaml
+    container_name: datanode-v9">>/DNIF/DL/podman-compose.yaml
     				echo -e "[-] Starting container... \n"
 				cd /DNIF/DL
 				podman-compose up -d
@@ -856,6 +860,12 @@ services:
 				podman_compose_check
 				sysctl_check
 				setenforce 0&>> /DNIF/install.log
+				file="/usr/bin/wget"
+                                if [ ! -f "$file " ]; then
+					dnf install -y wget&>> /DNIF/install.log
+                                        dnf install -y zip&>> /DNIF/install.log
+                                fi
+
 				if [[ $ProxyUrl ]]; then
 					mkdir -p /etc/systemd/system/docker.service.d
 					echo -e "[Service]
@@ -878,7 +888,7 @@ services:
 				sudo echo -e "version: "\'2.0\'"
 services:
  adapter:
-  image: dnif/adapter:$tag
+  image: docker.io/dnif/adapter:$tag
   network_mode: "\'host\'"
   restart: unless-stopped
   cap_add:
@@ -889,7 +899,7 @@ services:
   volumes:
    - /DNIF/AD:/dnif
    - /DNIF/backup/ad:/backup
-  container_name: adapter-v9">/DNIF/AD/docker-compose.yaml
+  container_name: adapter-v9">/DNIF/AD/podman-compose.yaml
 
 				echo -e "[-] Starting container... \n"
 				cd /DNIF/AD
