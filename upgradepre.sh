@@ -2,7 +2,7 @@
 set -e
 
 
-ubntu_upgrade_docker_container () {
+ubuntu_upgrade_docker_container () {
 
 	echo "$1"
 	if [[ "$1" == "core-v9" ]]; then
@@ -120,10 +120,10 @@ case "${os}" in
 						if [ "$final" ]; then
 							if [ "$final" == "v9.0.6" ]; then
 								final="v9.0.7"
-								ubntu_upgrade_docker_container $container_name $ver $final
+								ubuntu_upgrade_docker_container $container_name $ver $final
 								break
 							else
-								ubntu_upgrade_docker_container $container_name $ver $final
+								ubuntu_upgrade_docker_container $container_name $ver $final
 								break
 							fi
 						else
@@ -131,10 +131,10 @@ case "${os}" in
 							final="$(echo $last_tag|cut -d " " -f $b)"
 							if [ "$final" ]; then
 								if [ "$final" == "v9.0.6" ]; then
-									ubntu_upgrade_docker_container $container_name $ver $final
+									ubuntu_upgrade_docker_container $container_name $ver $final
 									break
 								else
-									ubntu_upgrade_docker_container $container_name $ver $final
+									ubuntu_upgrade_docker_container $container_name $ver $final
 									break
 								fi
 							else
@@ -199,4 +199,4 @@ case "${os}" in
 		done
 		;;
 
-		esac
+	esac
