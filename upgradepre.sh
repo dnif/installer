@@ -98,7 +98,7 @@ fi
 
 case "${os}" in
 	ubuntu)
-		container_list=( "adapter-v9" "datanode-v9" "console-v9" "core-v9" "pico-v9")
+		container_list=( "pico-v9" "adapter-v9" "datanode-v9" "console-v9" "core-v9" )
 		echo -e "[-] Finding docker container"
 		for container_name in "${container_list[@]}"
 		do
@@ -149,7 +149,7 @@ case "${os}" in
 			
 		;;
 	rhel)
-		container_list=( "adapter-v9" "datanode-v9" "console-v9" "core-v9" "pico-v9")
+		container_list=( "pico-v9" "adapter-v9" "datanode-v9" "console-v9" "core-v9" )
 		echo -e "[-] Finding docker container"
 		for container_name in "${container_list[@]}"
 		do
