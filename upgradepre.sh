@@ -120,10 +120,10 @@ case "${os}" in
 						if [ "$final" ]; then
 							if [ "$final" == "v9.0.6" ]; then
 								final="v9.0.7"
-								ubuntu_upgrade_docker_container $container_name $ver $final
+								ubntu_upgrade_docker_container $container_name $ver $final
 								break
 							else
-								ubuntu_upgrade_docker_container $container_name $ver $final
+								ubntu_upgrade_docker_container $container_name $ver $final
 								break
 							fi
 						else
@@ -131,10 +131,10 @@ case "${os}" in
 							final="$(echo $last_tag|cut -d " " -f $b)"
 							if [ "$final" ]; then
 								if [ "$final" == "v9.0.6" ]; then
-									ubuntu_upgrade_docker_container $container_name $ver $final
+									ubntu_upgrade_docker_container $container_name $ver $final
 									break
 								else
-									ubuntu_upgrade_docker_container $container_name $ver $final
+									ubntu_upgrade_docker_container $container_name $ver $final
 									break
 								fi
 							else
