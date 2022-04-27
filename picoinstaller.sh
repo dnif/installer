@@ -114,10 +114,12 @@ function podman_compose_check() {
 	file="/usr/bin/podman-compose"
 	if [ -f "$file" ]; then
 		version=$(podman-compose version|grep "podman-composer version" |cut -d " " -f4) 
-		if [[ "$version" != "0.1.7dev" ]]; then
+		if [[ "$version" != "1.0.4" ]]; then
 			echo -n "[-] Finding podman-compose installation - found incompatible version"
 			echo -e "... \e[0;31m[ERROR] \e[0m\n"
 			echo -e "[-] Updating podman-compose\n"
+			rm -rf /usr/bin/podman-compose&>> /DNIF/install.log
+			pip3 install --upgrade setuptools&>> /DNIF/install.log
 			pip3 install https://github.com/containers/podman-compose/archive/devel.tar.gz&>> /DNIF/install.log
 			sudo ln -s /usr/local/bin/podman-compose /usr/bin/podman-compose&>> /DNIF/install.log
 			echo -e "[-] Installing podman-compose - ... \e[1;32m[DONE] \e[0m\n"
@@ -128,6 +130,7 @@ function podman_compose_check() {
 	else
 		echo -e "[-] Finding podman-compose installation - ... \e[1;31m[NEGATIVE] \e[0m\n"
 		echo -e "[-] Installing podman-compose\n"
+		pip3 install --upgrade setuptools&>> /DNIF/install.log
 		pip3 install https://github.com/containers/podman-compose/archive/devel.tar.gz&>> /DNIF/install.log
 		sudo ln -s /usr/local/bin/podman-compose /usr/bin/podman-compose&>> /DNIF/install.log
         	echo -e "[-] Installing podman-compose - ... \e[1;32m[DONE] \e[0m\n"
@@ -250,7 +253,6 @@ services:
   environment:
    - "\'CORE_IP="$COREIP"\'"
    - "\'PROXY="$ProxyUrl"\'"
-  tmpfs: /DNIF
   volumes:
    - /DNIF/PICO:/dnif
    - /DNIF/backup/pc:/backup
@@ -294,7 +296,7 @@ else
 
 	echo -n "Operating system compatibility "
 	sleep 2
-	if [[ "$VER" = "8.3" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 20.04 by the number of release you want
+	if [[ "$VER" = "8.5" ]] && [[ "$ARCH" = "x86_64" ]];  then # replace 20.04 by the number of release you want
 		echo -e " ... \e[1;32m[OK] \e[0m"
 		echo -n "Architecture compatibility "
 		echo -e " ... \e[1;32m[OK] \e[0m\n"
@@ -303,15 +305,37 @@ else
 		echo -e "** Please report issues to https://github.com/dnif/installer/issues"
 		echo -e "** for more information visit https://docs.dnif.it/v9/docs/high-level-dnif-architecture\n"
 		echo -e "[-] Installing the PICO \n"
+		if [[ "$1" == "proxy" ]]; then
+                        ProxyUrl=""
+                        while [[ ! "$ProxyUrl" ]]; do
+                                echo -e "ENTER Proxy url: \c"
+                                read -r ProxyUrl
+                        done
+                        set_proxy $ProxyUrl
+                fi
 		podman_check
 		podman_compose_check
 		sysctl_check
 		setenforce 0&>> /DNIF/install.log
 		mkdir -p /DNIF/PICO&>> /DNIF/install.log
+		file="/usr/bin/wget"
+                if [ ! -f "$file " ]; then
+			dnf install -y wget&>> /DNIF/install.log
+                        dnf install -y zip&>> /DNIF/install.log
+                fi
+
 		
 		mkdir -p /DNIF/backup/pc&>> /DNIF/install.log
+		if [[ $ProxyUrl ]]; then
+                        mkdir -p /etc/systemd/system/docker.service.d
+                        echo -e "[Service]
+        Environment=\"HTTPS_PROXY=$ProxyUrl\"">/etc/systemd/system/docker.service.d/http-proxy.conf
+
+                        sudo systemctl daemon-reload
+                        sudo systemctl restart podman
+                fi
 		echo -e "[-] Pulling docker Image for PICO\n"
-		sudo podman pull dnif/pico:$tag
+		sudo podman pull docker.io/dnif/pico:$tag
 		COREIP=""
 		while [[ ! $COREIP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; do
 			echo -e "ENTER CORE IP: \c"
@@ -320,18 +344,18 @@ else
 		sudo echo -e "version: "\'2.0\'"
 services:
  pico:
-  image: dnif/pico:$tag
+  image: docker.io/dnif/pico:$tag
   network_mode: "\'host\'"
   restart: unless-stopped
   cap_add:
    - NET_ADMIN
   environment:
+   - "\'PROXY="$ProxyUrl"\'"
    - "\'CORE_IP="$COREIP"\'"
-  tmpfs: /DNIF
   volumes:
    - /DNIF/PICO:/dnif
    - /DNIF/backup/pc:/backup
-  container_name: pico-v9">/DNIF/PICO/docker-compose.yaml
+  container_name: pico-v9">/DNIF/PICO/podman-compose.yaml
 
 		echo -e "[-] Starting container... \n"
 		cd /DNIF/PICO
@@ -346,6 +370,5 @@ services:
 fi
 		;;
 	esac
-
 
 
