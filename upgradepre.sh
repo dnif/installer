@@ -2,7 +2,7 @@
 set -e
 
 
-ubntu_upgrade_docker_container () {
+ubuntu_upgrade_docker_container () {
 
 	echo "$1"
 	if [[ "$1" == "core-v9" ]]; then
