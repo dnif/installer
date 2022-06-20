@@ -4,7 +4,7 @@ set -e
 
 ubuntu_upgrade_docker_container () {
 
-	echo "$1"
+	#echo "$1"
 	if [[ "$1" == "core-v9" ]]; then
                 cd /DNIF
 		if [[ "$2" == "v9.0" ]]; then
@@ -48,7 +48,7 @@ ubuntu_upgrade_docker_container () {
 
 upgrade_podman_container () {
 
-	echo "$1"
+	#echo "$1"
 	if [[ "$1" == "core-v9" ]]; then
                 cd /DNIF
 		if [[ "$2" == "v9.0" ]]; then
@@ -106,35 +106,49 @@ case "${os}" in
 				echo -e "[-] Found $container_name docker container\n"
 				echo -e "[-] Checking for current running version\n"
 				sleep 3
-				ver="$(docker ps  -f status=running -f name=^/$container_name|awk 'NR > 1 {print $2; exit}'|cut -d ":" -f2)"
+				current_ver="$(docker ps  -f status=running -f name=^/$container_name|awk 'NR > 1 {print $2; exit}'|cut -d ":" -f2)"
 				echo -e "[-] Found current version $current_tag\n"
 				image="$(docker ps -f status=running -f name=^/$container_name|awk 'NR > 1 {print $2; exit}'|cut -d ":" -f1)"
+				filtered_tag=()
 				echo -e "[-] Fetching Tags from docker hub\n"
-				last_tag="$(wget -q https://registry.hub.docker.com/v1/repositories/"$image"/tags -O - | tr -d '[]" ' | tr '}' '\n' | awk -F: '{print $3}'|sort -V)"
+				tag_list="$(wget -q https://registry.hub.docker.com/v1/repositories/"$image"/tags -O - | tr -d '[]" ' | tr '}' '\n' | awk -F: '{print $3}'|sort -V)"
 				END=100
+				
 				for ((i=1;i<=END;i++)); do
-					new="$(echo $last_tag|cut -d " " -f $i)"
-					if [ "$new" == "$ver" ]; then
+                                        tag="$(echo $tag_list|cut -d " " -f $i)"
+                                        if [[ $tag =~ ^[v9]+\.[0-9]+\.[0-9]+$ ]]; then
+                                                filtered_tag+=($tag)
+                                        fi
+                                done
+                                len=${#filtered_tag[@]}
+				
+				
+				
+				
+				
+				for (( i=0; i<$len; i++ )); do
+					latest_ver="${filtered_tag[i]}"
+					if [ "$latest_ver" == "$current_ver" ]; then
 						((a=i+2))
-						final="$(echo $last_tag|cut -d " " -f $a)"
-						if [ "$final" ]; then
-							if [ "$final" == "v9.0.6" ]; then
-								final="v9.0.7"
-								ubuntu_upgrade_docker_container $container_name $ver $final
+						latest_tag=${filtered_tag[$a]}
+						if [ "$latest_tag" ]; then
+							if [ "$latest_tag" == "v9.0.6" ]; then
+								latest_tag="v9.0.7"
+								ubuntu_upgrade_docker_container $container_name $current_ver $latest_tag
 								break
 							else
-								ubuntu_upgrade_docker_container $container_name $ver $final
+								ubuntu_upgrade_docker_container $container_name $current_ver $latest_tag
 								break
 							fi
 						else
 							((b=i+1))
-							final="$(echo $last_tag|cut -d " " -f $b)"
-							if [ "$final" ]; then
-								if [ "$final" == "v9.0.6" ]; then
-									ubuntu_upgrade_docker_container $container_name $ver $final
+							latest_tag=${filtered_tag[$b]}
+							if [ "$latest_tag" ]; then
+								if [ "$latest_tag" == "v9.0.6" ]; then
+									ubuntu_upgrade_docker_container $container_name $current_ver $latest_tag
 									break
 								else
-									ubuntu_upgrade_docker_container $container_name $ver $final
+									ubuntu_upgrade_docker_container $container_name $current_ver $latest_tag
 									break
 								fi
 							else
@@ -157,35 +171,47 @@ case "${os}" in
 				echo -e "[-] Found $container_name docker container\n"
 				echo -e "[-] Checking for current running version\n"
 				sleep 3
-				ver="$(podman ps  -f status=running -f name=$container_name|awk 'NR > 1 {print $2; exit}'|cut -d ":" -f2)"
+				current_ver="$(podman ps  -f status=running -f name=$container_name|awk 'NR > 1 {print $2; exit}'|cut -d ":" -f2)"
 				echo -e "[-] Found current version $ver\n"
 				image="$(podman ps -f status=running -f name=$container_name|awk 'NR > 1 {print $2; exit}'|cut -d ":" -f1|cut -d "/" -f3)"
 				echo -e "[-] Fetching Tags from docker hub\n"
-				last_tag="$(wget -q https://registry.hub.docker.com/v1/repositories/dnif/"$image"/tags -O - | tr -d '[]" ' | tr '}' '\n' | awk -F: '{print $3}'|sort -V)"
+				tag_list="$(wget -q https://registry.hub.docker.com/v1/repositories/dnif/"$image"/tags -O - | tr -d '[]" ' | tr '}' '\n' | awk -F: '{print $3}'|sort -V)"
+				filtered_tag=()
 				END=100
+				
+				
 				for ((i=1;i<=END;i++)); do
-					new="$(echo $last_tag|cut -d " " -f $i)"
-					if [ "$new" == "$ver" ]; then
+                                        tag="$(echo $tag_list|cut -d " " -f $i)"
+                                        if [[ $tag =~ ^[v9]+\.[0-9]+\.[0-9]+$ ]]; then
+                                                filtered_tag+=($tag)
+                                        fi
+                                done
+                                len=${#filtered_tag[@]}
+				
+				
+				for (( i=0; i<$len; i++ )); do
+					latest_ver="${filtered_tag[i]}"
+					if [ "$latest_ver" == "$current_ver" ]; then
 						((a=i+2))
-						final="$(echo $last_tag|cut -d " " -f $a)"
-						if [ "$final" ]; then
-							if [ "$final" == "v9.0.6" ]; then
-								final="v9.0.7"
-								upgrade_podman_container $container_name $ver $final
+						latest_tag="$(echo $last_tag|cut -d " " -f $a)"
+						if [ "$latest_tag" ]; then
+							if [ "$latest_tag" == "v9.0.6" ]; then
+								latest_tag="v9.0.7"
+								upgrade_podman_container $container_name $current_ver $latest_tag
 								break
 							else
-								upgrade_podman_container $container_name $ver $final
+								upgrade_podman_container $container_name $current_ver $latest_tag
 								break
 							fi
 						else
 							((b=i+1))
-							final="$(echo $last_tag|cut -d " " -f $b)"
-							if [ "$final" ]; then
-								if [ "$final" == "v9.0.6" ]; then
-									upgrade_podman_container $container_name $ver $final
+							latest_tag=${filtered_tag[$b]}
+							if [ "$latest_tag" ]; then
+								if [ "$latest_tag" == "v9.0.6" ]; then
+									upgrade_podman_container $container_name $current_ver $latest_tag
 									break
 								else
-									upgrade_podman_container $container_name $ver $final
+									upgrade_podman_container $container_name $current_ver $latest_tag
 									break
 								fi
 							else
@@ -199,4 +225,4 @@ case "${os}" in
 		done
 		;;
 
-	esac
+		esac
