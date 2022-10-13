@@ -107,11 +107,11 @@ case "${os}" in
 				echo -e "[-] Checking for current running version\n"
 				sleep 3
 				current_ver="$(docker ps  -f status=running -f name=^/$container_name|awk 'NR > 1 {print $2; exit}'|cut -d ":" -f2)"
-				echo -e "[-] Found current version $current_tag\n"
+				echo -e "[-] Found current version $current_ver\n"
 				image="$(docker ps -f status=running -f name=^/$container_name|awk 'NR > 1 {print $2; exit}'|cut -d ":" -f1)"
 				filtered_tag=()
 				echo -e "[-] Fetching Tags from docker hub\n"
-				tag_list="$(wget -q https://registry.hub.docker.com/v1/repositories/"$image"/tags -O - | tr -d '[]" ' | tr '}' '\n' | awk -F: '{print $3}'|sort -V)"
+				tag_list="$(curl -L -s 'https://registry.hub.docker.com/v2/repositories/'$image'/tags' | grep -oh 'v9.\w*.\w*'|sort -V)"
 				END=100
 				
 				for ((i=1;i<=END;i++)); do

@@ -166,7 +166,7 @@ case "${os}" in
                                 image="$(docker images|grep $container_name|awk 'NR==1 {print $1; exit}'|cut -d "/" -f2)"
                                 echo -e "[-] Fetching Tags from docker hub"
                                 filtered_tag=()
-                                tag_list="$(wget -q https://registry.hub.docker.com/v1/repositories/dnif/"$image"/tags -O - | tr -d '[]" ' |tr '}' '\n' | awk -F: '{print $3}'|sort -V )"
+				tag_list="$(curl -L -s 'https://registry.hub.docker.com/v2/repositories/dnif/'$image'/tags' | grep -oh 'v9.\w*.\w*'|sort -V)"
                                 END=100
                                 for ((i=1;i<=END;i++)); do
                                         tag="$(echo $tag_list|cut -d " " -f $i)"
