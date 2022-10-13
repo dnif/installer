@@ -175,7 +175,8 @@ case "${os}" in
 				echo -e "[-] Found current version $ver\n"
 				image="$(podman ps -f status=running -f name=$container_name|awk 'NR > 1 {print $2; exit}'|cut -d ":" -f1|cut -d "/" -f3)"
 				echo -e "[-] Fetching Tags from docker hub\n"
-				tag_list="$(wget -q https://registry.hub.docker.com/v1/repositories/dnif/"$image"/tags -O - | tr -d '[]" ' | tr '}' '\n' | awk -F: '{print $3}'|sort -V)"
+				tag_list="$(curl -L -s 'https://registry.hub.docker.com/v2/repositories/dnif/'$image'/tags' | grep -oh 'v9.\w*.\w*'|sort -V)"
+
 				filtered_tag=()
 				END=100
 				
