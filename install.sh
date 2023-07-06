@@ -186,7 +186,7 @@ if [ -r /etc/os-release ]; then
 	os="$(. /etc/os-release && echo "$ID")"
 fi
 
-tag="v9.2.0"
+tag="v9.2.5"
 case "${os}" in
 	ubuntu)
 		if [[ $EUID -ne 0 ]]; then
