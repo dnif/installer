@@ -325,7 +325,8 @@ services:
     environment:
       - "\'CORE_IP="$COREIP"\'"
       - "\'PROXY="$ProxyUrl"\'"
-      - "\'$(if [ $unet_ip ]; then echo "UNET_IP=$unet_ip"; fi)\'"
+	  $(if [ $unet_ip ]; then echo "- "\'UNET_IP="$unet_ip"\'""; fi)
+
     ulimits:
       memlock:
         soft: -1
@@ -686,7 +687,7 @@ services:
     environment:
       - "\'PROXY="$ProxyUrl"\'"
       - "\'CORE_IP="$COREIP"\'"
-	  - "\'$(if [ $unet_ip ]; then echo "UNET_IP=$unet_ip"; fi)\'"
+	  $(if [ $unet_ip ]; then echo "- "\'UNET_IP="$unet_ip"\'""; fi)
     ulimits:
       memlock:
         soft: -1
