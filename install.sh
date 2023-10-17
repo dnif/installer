@@ -293,6 +293,13 @@ else
 				docker pull dnif/datanode:$tag
 				cd /
 				sudo mkdir -p DNIF
+                read -p "[-] It has local UNET [Y/n] " isUnet
+				isUnet=${isUnet^^}
+                if [ $isUnet == "Y" ]; then
+                   echo -e "ENTER UNET IP: \c" 
+                   read -r unet_ip
+                    
+                fi
 				COREIP=""
 				while [[ ! $COREIP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; do
 					echo -e "ENTER CORE IP: \c"
@@ -318,6 +325,7 @@ services:
     environment:
       - "\'CORE_IP="$COREIP"\'"
       - "\'PROXY="$ProxyUrl"\'"
+      - "\'$(if [ $unet_ip ]; then echo "UNET_IP=$unet_ip"; fi)\'"
     ulimits:
       memlock:
         soft: -1
@@ -650,7 +658,13 @@ else
 				mkdir -p /DNIF/backup/core&>> /DNIF/install.log
 				echo -e "\n[-] Pulling docker Image for CORE\n"
 				sudo  podman pull docker.io/dnif/core:$tag
-
+				read -p "[-] It has local UNET [Y/n] " isUnet
+                isUnet=${isUnet^^}
+                if [ $isUnet == "Y" ]; then
+                   echo -e "\n ENTER UNET IP: \c" 
+                   read -r unet_ip
+                    
+                fi
 				COREIP=""
 				while [[ ! $COREIP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; do
 					echo -e "ENTER CORE IP: \c"
@@ -672,6 +686,7 @@ services:
     environment:
       - "\'PROXY="$ProxyUrl"\'"
       - "\'CORE_IP="$COREIP"\'"
+	  - "\'$(if [ $unet_ip ]; then echo "UNET_IP=$unet_ip"; fi)\'"
     ulimits:
       memlock:
         soft: -1
@@ -919,5 +934,4 @@ services:
 fi
 		;;
 	esac
-
 
