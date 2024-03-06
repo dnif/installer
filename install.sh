@@ -186,7 +186,7 @@ if [ -r /etc/os-release ]; then
 	os="$(. /etc/os-release && echo "$ID")"
 fi
 
-tag="v9.2.0"
+tag="v9.2.5"
 case "${os}" in
 	ubuntu)
 		if [[ $EUID -ne 0 ]]; then
@@ -303,7 +303,7 @@ else
 				#	echo -e "ENTER Proxy url: \c"
 				#	read -r ProxyUrl
 				#done
-				sudo echo -e "version: "\'2.0\'"
+				sudo echo -e "version: "\'2.1\'"
 services:
   core:
     image: dnif/core:$tag
@@ -364,7 +364,7 @@ services:
 				cd /
 				sudo mkdir -p /DNIF
 				sudo mkdir -p /DNIF/LC
-				sudo echo -e "version: "\'2.0\'"
+				sudo echo -e "version: "\'2.1\'"
 services:
  console:
   image: dnif/console:$tag
@@ -439,7 +439,7 @@ services:
 				done
 				sudo mkdir -p /DNIF
 				sudo mkdir -p /DNIF/DL
-				sudo echo -e "version: "\'2.0\'"
+				sudo echo -e "version: "\'2.1\'"
 services:
   datanode:
     privileged: true
@@ -501,10 +501,15 @@ services:
 					echo -e "ENTER CORE IP: \c"
 					read -r COREIP
 				done
+				HOSTIP=""
+				while [[ ! $HOSTIP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; do
+					echo -e "ENTER ADAPTER IP: \c"
+					read -r HOSTIP
+				done
 				cd /
 				sudo mkdir -p /DNIF
 				sudo mkdir -p /DNIF/AD
-				sudo echo -e "version: "\'2.0\'"
+				sudo echo -e "version: "\'2.1\'"
 services:
  adapter:
   image: dnif/adapter:$tag
@@ -514,6 +519,7 @@ services:
    - NET_ADMIN
   environment:
    - "\'CORE_IP="$COREIP"\'"
+   - "\'HOST_IP="$HOSTIP"\'"
    - "\'PROXY="$ProxyUrl"\'"
   tmpfs: /DNIF
   volumes:
@@ -888,6 +894,11 @@ services:
 					echo -e "ENTER CORE IP: \c"
 					read -r COREIP
 				done
+				HOSTIP=""
+				while [[ ! $HOSTIP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; do
+					echo -e "ENTER ADAPTER IP: \c"
+					read -r HOSTIP
+				done
 
 				sudo echo -e "version: "\'2.0\'"
 services:
@@ -899,6 +910,7 @@ services:
    - NET_ADMIN
   environment:
    - "\'CORE_IP="$COREIP"\'"
+   - "\'HOST_IP="$HOSTIP"\'"
    - "\'PROXY="$ProxyUrl"\'"
   volumes:
    - /DNIF/AD:/dnif
@@ -919,5 +931,3 @@ services:
 fi
 		;;
 	esac
-
-
