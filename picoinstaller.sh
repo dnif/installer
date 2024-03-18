@@ -181,7 +181,7 @@ if [ -r /etc/os-release ]; then
 	os="$(. /etc/os-release && echo "$ID")"
 fi
 
-tag="v9.2.0"
+tag="v9.2.5"
 case "${os}" in
 	ubuntu)
 		if [[ $EUID -ne 0 ]]; then
@@ -341,7 +341,7 @@ else
 			echo -e "ENTER CORE IP: \c"
 			read -r COREIP
 		done
-		sudo echo -e "version: "\'2.0\'"
+		sudo echo -e "version: "\'2.1\'"
 services:
  pico:
   image: docker.io/dnif/pico:$tag
