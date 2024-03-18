@@ -242,7 +242,7 @@ else
 		cd /
 		sudo mkdir -p /DNIF
 		sudo mkdir -p /DNIF/PICO
-		sudo echo -e "version: "\'2.0\'"
+		sudo echo -e "version: "\'2.1\'"
 services:
  pico:
   image: dnif/pico:$tag
@@ -341,7 +341,7 @@ else
 			echo -e "ENTER CORE IP: \c"
 			read -r COREIP
 		done
-		sudo echo -e "version: "\'2.0\'"
+		sudo echo -e "version: "\'2.1\'"
 services:
  pico:
   image: docker.io/dnif/pico:$tag
